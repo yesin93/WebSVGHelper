@@ -1,5 +1,5 @@
 # WebSVGHelper
-Developing a Javascript plugin that gives user to easily create and work with responsive SVGs. Using jQuery and D3 JS
+Developing a Javascript plugin that gives user to easily create and work with SVGs in RWD. Using jQuery and D3 JS
 
 ## Current Functions of ShapesJS
 * Place an SVG layer with attributes on a given div
