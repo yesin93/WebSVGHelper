@@ -86,6 +86,9 @@ var shapesJS = (function ( $ ) {
                 .classed("my-svg", true);
 
 
+            $('#'+ properties.idLayer).css("z-index", properties.z_index);
+
+
             addLayertoJSON(properties.idLayer, properties.name);
 
             return layer;
@@ -129,15 +132,13 @@ var shapesJS = (function ( $ ) {
 
     //lower the SVG layer position
     $.fn.layerDescend = function(lowerBy){
-
-
-        this.css("z-index", lowerBy);
+        this.css("z-index", lowerBy*(-1));
         return this;
     };
 
     //raise the SVG layer position
-    $.fn.layerAscend = function(lowerBy){
-        this.css("z-index", lowerBy);
+    $.fn.layerAscend = function(raiseBy){
+        this.css("z-index", raiseBy);
         return this;
     };
 

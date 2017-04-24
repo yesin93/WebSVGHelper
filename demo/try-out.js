@@ -49,3 +49,6 @@ var squareAttr = {
 
 //Draw a square on second layer
 var square = $('svg').drawRect(layer2, squareAttr);
+
+//raise the layer
+$('#layer1').layerDescend(20);
