@@ -18,12 +18,35 @@ function addLayertoJSON(layerID, name){
 
     layer["layerID"] = layerID;
     layer["name"] = name;
-    layer["custom"] = custom;
+    layer["customAttr"] = custom;
     layer["cssProp"] = cssProp;
     layer["contents"] = contents;
 
     shapesJS.layers.push(layer);
     console.log(shapesJS);
+}
+
+function layerOjects(){
+
+    // //checking the type of the object on the overlay
+    // var type;
+
+    //The array that holds the shape objects
+    var layer = [];
+
+    //The information of an object
+    var shapes = {};
+
+    //coordinates
+    var coords = {};
+
+    //custom attributes
+    var customAttr = {};
+
+$.each(shapesJS.layers, function(i, n){
+        // if(n.layerID == layerID)
+    });
+
 }
 
 //generate a unique default id
@@ -96,6 +119,48 @@ var shapesJS = (function ( $ ) {
 
     };
 
+    //Add a custom attribute to the relevant object
+    $.fn.addCustomAttr = function(layerID, attrs){
+
+        $.each(shapesJS.layers, function(i, d){
+            if(d.layerID == layerID){
+                d.customAttr = attrs;
+            }
+        });
+        console.log(shapesJS);
+        return this;
+    };
+
+    //Remove a custom attribute from the relevant object
+    $.fn.removeCustomAttr = function(layerID, attrName){
+        $.each(shapesJS.layers, function(i, d){
+            if(d.layerID == layerID){
+                console.log(d.customAttr[attrName]);
+                d.customAttr[attrName] = "";
+            }
+        });
+        return this;
+    };
+
+    //Clear all custom attributes
+    $.fn.clearAllCustomAttr = function(layerID){
+        $.each(shapesJS.layers, function(i, d){
+            if(d.layerID == layerID){
+                d.customAttr = "";
+            }
+        });
+        return this;
+    };
+
+    $.fn.updateCustomAttr = function(layerID, attrName, attrValue){
+        $.each(shapesJS.layers, function(i, d){
+            if(d.layerID == layerID){
+                d.customAttr[attrName] = attrValue;
+            }
+        });
+        return this;
+    };
+
     //draw a circle on given SVG layer
     $.fn.drawCircle = function(layer, options){
         var properties = $.extend({
@@ -103,6 +168,7 @@ var shapesJS = (function ( $ ) {
             cy: 200,
             r: 100,
             fill: "red"
+            // id: layer._groups
         }, options);
 
         var circle = layer.append("circle")
@@ -114,6 +180,11 @@ var shapesJS = (function ( $ ) {
 
     //draw a rectangle on given SVG layer
     $.fn.drawRect = function (layer, options) {
+        console.log(layer);
+        console.log(JSON.stringify(layer._groups[0]));
+        console.log(layer._groups[0]);
+        console.log(layer._groups[0]);
+
         var properties = $.extend({
             x:200,
             y:200,
@@ -128,6 +199,16 @@ var shapesJS = (function ( $ ) {
             .attr("height", properties.height)
             .attr("width",properties.width)
             .attr("fill", properties.fill);
+
+        var coords = {};
+
+        coords["x"] = properties.x;
+        coords["y"] = properties.y;
+        coords["height"] =  properties.height;
+        coords["width"] = properties.width;
+        coords["styling"] = properties.fill;
+
+        // layerObjects(layer ,shapeType, coords);
     };
 
     //lower the SVG layer position
@@ -173,11 +254,11 @@ var shapesJS = (function ( $ ) {
 
     $.fn.scaleImage = function(){
         // this.css( "width", width );
-        function calculateAspectRatioFit(srcWidth, srcHeight, maxWidth, maxHeight) {
+        function getAspectRatioFit(imgWidth, imgHeight, maxWidth, maxHeight) {
 
-            var ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
+            var ratio = Math.min(maxWidth / imgWidth, maxHeight / imgHeight);
 
-            return { width: srcWidth*ratio + "px", height: srcHeight*ratio + "px" };
+            return { width: imgWidth*ratio + "px", height: imgHeight*ratio + "px" };
         }
 
         var scaledImage = calculateAspectRatioFit(imageWidth, imageHeight, 554, 750);
