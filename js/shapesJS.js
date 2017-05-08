@@ -1,15 +1,14 @@
-//JSON object
-var shapesJS = {
+var shapesJSObj = {
     layers: []
 }
 
 function addLayertoJSON(layerID, name){
 
     //local storage object
-    // var KEY_NAME = "shapeJS";
+    var KEY_NAME = "shapeJS";
 
     // layer object
-    var layer = {}
+    var layer = {};
 
     //layer data
     var custom = {};
@@ -18,36 +17,44 @@ function addLayertoJSON(layerID, name){
 
     layer["layerID"] = layerID;
     layer["name"] = name;
-    layer["customAttr"] = custom;
+    layer["custom"] = custom;
     layer["cssProp"] = cssProp;
     layer["contents"] = contents;
+    layer["shapes"] = null;
 
-    shapesJS.layers.push(layer);
-    console.log(shapesJS);
-}
+    shapesJSObj.layers.push(layer);
+    console.log(shapesJSObj);
 
-function layerOjects(){
+    // var result = JSON.stringify(shapesJS);
+    // window.localStorage.setItem(KEY_NAME, result);
+    // alert('Saved');
+};
+
+function layerOjects(layerID, type, coords, customAttr ){
 
     // //checking the type of the object on the overlay
     // var type;
+    var shapes = [];
+    var shape = {};
 
-    //The array that holds the shape objects
-    var layer = [];
+    shape["type"] = type;
+    shape["coords"] = coords;
+    shape["customAttr"] = customAttr;
 
-    //The information of an object
-    var shapes = {};
-
-    //coordinates
-    var coords = {};
 
     //custom attributes
-    var customAttr = {};
+    // var customAttr = {};
+    shapes.push(shape);
 
-$.each(shapesJS.layers, function(i, n){
-        // if(n.layerID == layerID)
+$.each(shapesJSObj.layers, function(i, n){
+        if(n.layerID == layerID){
+            n.shapes = shapes;
+        }
     });
 
-}
+console.log(shapesJSObj);
+
+};
 
 //generate a unique default id
 function generateUUID() {
@@ -120,20 +127,32 @@ var shapesJS = (function ( $ ) {
     };
 
     //Add a custom attribute to the relevant object
-    $.fn.addCustomAttr = function(layerID, attrs){
+    $.fn.createCustomAttr = function(layerID, attrs){
 
-        $.each(shapesJS.layers, function(i, d){
+        $.each(shapesJSObj.layers, function(i, d){
             if(d.layerID == layerID){
                 d.customAttr = attrs;
             }
         });
-        console.log(shapesJS);
+        console.log(shapesJSObj);
+        return this;
+    };
+
+    //Add a custom attribute to the relevant object
+    $.fn.addCustomAttrTo = function(layerID, newAttr){
+
+        $.each(shapesJSObj.layers, function(i, d){
+            if(d.layerID == layerID){
+                d.customAttr = $.extend(d.customAttr, newAttr);
+            }
+        });
+        console.log(shapesJSObj);
         return this;
     };
 
     //Remove a custom attribute from the relevant object
     $.fn.removeCustomAttr = function(layerID, attrName){
-        $.each(shapesJS.layers, function(i, d){
+        $.each(shapesJSObj.layers, function(i, d){
             if(d.layerID == layerID){
                 console.log(d.customAttr[attrName]);
                 d.customAttr[attrName] = "";
@@ -144,7 +163,7 @@ var shapesJS = (function ( $ ) {
 
     //Clear all custom attributes
     $.fn.clearAllCustomAttr = function(layerID){
-        $.each(shapesJS.layers, function(i, d){
+        $.each(shapesJSObj.layers, function(i, d){
             if(d.layerID == layerID){
                 d.customAttr = "";
             }
@@ -153,7 +172,7 @@ var shapesJS = (function ( $ ) {
     };
 
     $.fn.updateCustomAttr = function(layerID, attrName, attrValue){
-        $.each(shapesJS.layers, function(i, d){
+        $.each(shapesJSObj.layers, function(i, d){
             if(d.layerID == layerID){
                 d.customAttr[attrName] = attrValue;
             }
@@ -161,7 +180,9 @@ var shapesJS = (function ( $ ) {
         return this;
     };
 
-    //draw a circle on given SVG layer
+    /*
+     * Temporary test method Draw a rectangle on given SVG layer
+     */
     $.fn.drawCircle = function(layer, options){
         var properties = $.extend({
             cx: 200,
@@ -178,12 +199,15 @@ var shapesJS = (function ( $ ) {
             .attr("fill", properties.fill);
     };
 
-    //draw a rectangle on given SVG layer
+    /*
+    * Temporary test method Draw a rectangle on given SVG layer
+     */
     $.fn.drawRect = function (layer, options) {
         console.log(layer);
         console.log(JSON.stringify(layer._groups[0]));
+        console.log(layer._groups[0][0].id);
         console.log(layer._groups[0]);
-        console.log(layer._groups[0]);
+
 
         var properties = $.extend({
             x:200,
@@ -193,12 +217,14 @@ var shapesJS = (function ( $ ) {
             fill: "red"
         }, options);
 
+
         var rectangle = layer.append("rect")
             .attr("x", properties.x)
             .attr("y", properties.y)
             .attr("height", properties.height)
             .attr("width",properties.width)
             .attr("fill", properties.fill);
+
 
         var coords = {};
 
@@ -208,7 +234,11 @@ var shapesJS = (function ( $ ) {
         coords["width"] = properties.width;
         coords["styling"] = properties.fill;
 
-        // layerObjects(layer ,shapeType, coords);
+        var shapeType = "rect";
+        var layerID = layer._groups[0][0].id;
+        var customAttr;
+
+        layerOjects(layerID ,shapeType, coords, customAttr);
     };
 
     //lower the SVG layer position

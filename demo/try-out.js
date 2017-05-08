@@ -52,9 +52,9 @@ var square = $('svg').drawRect(layer2, squareAttr);
 
 //raise the layer
 $('#layer1').layerDescend(20);
-layerOjects();
 
-$('#layer2').addCustomAttr("layer2", {date:"12/11/2011",
+
+$('#layer2').createCustomAttr("layer2", {date:"12/11/2011",
 area:"the room",
 custom: 43});
 
