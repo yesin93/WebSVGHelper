@@ -6,8 +6,8 @@
     <link href="../css/shapesJS.css" rel="stylesheet" type="text/css"/>
     <script src="../libs/jquery_1.11.0/jquery-1.11.3.min.js"></script>
     <script src="../libs/d3/d3.js"></script>
-    <script src="../libs/d3-beginner/d3-beginner.min.js"></script>
-
+    <!--<script src="../js/shapesJS.js"></script>-->
+    <script src="../js/shapesJSON.js"></script>
 </head>
 
 <body>
@@ -15,12 +15,39 @@
 <h1>ShapesJS</h1>
 
 <div class = "svg-container">
+    <!--<svg></svg>-->
 </div>
 
-<script src="../js/shapesJS.js"></script>
-<script src="try-out.js"></script>
+
+<!--<script src="try-out.js"></script>-->
 <script>
-    console.log(d3.foo());
+//var layer1 = d3.select('.svg-container').addSVGOverlay({
+//    idLayer: "layer1",
+//    name: "initial",
+//    viewBox: "0 0 800 960",
+//    preserveAspectRatio: "xMinYMin meet"
+//});
+
+var layer = d3.createNewLayer({
+    idLayer: "layer1",
+    name: "initial",
+    viewBox: "0 0 800 960",
+    preserveAspectRatio: "xMinYMin meet"
+});
+
+d3.createCustomAttr("layer1", {
+    "length":18,
+    "name": "object"
+});
+
+d3.addGroupEl("layer1", {
+    name: "grouping",
+    idGroupEl: 'grouping1'
+})
+
+d3.drawCircle("grouping1")
+    console.log(shapesJSObj);
+
 </script>
 
 </body>
