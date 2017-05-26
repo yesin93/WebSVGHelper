@@ -58,4 +58,4 @@ $('#layer2').createCustomAttr("layer2", {date:"12/11/2011",
 area:"the room",
 custom: 43});
 
-$('#layer2').removeCustomAttr("layer2", "date")
+$('#layer2').removeCustomAttr("layer2", "date");

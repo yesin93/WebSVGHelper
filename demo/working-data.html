@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>D3 Data</title>
+    <link href="../css/shapesJS.css" rel="stylesheet" type="text/css"/>
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.0/d3.min.js"></script>-->
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+</head>
+<body>
+
+<script>
+    var svg  = d3.select('body').append('svg').attr("width", 500).attr("height", 600);
+
+    var circle = svg.append('circle')
+        .attr("cx", 200)
+        .attr("cy", 200)
+        .attr("r", 100)
+        .attr("fill", "lightblue");
+
+    var bindinData = circle.data()
+
+    var matrix = [
+        [11975,  5871, 8916, 2868],
+        [ 1951, 10048, 2060, 6171],
+        [ 8010, 16145, 8090, 8045],
+        [ 1013,   990,  940, 6907]
+    ];
+
+//    var tr = d3.select("body").append("table").selectAll("tr")
+//        .data(matrix)
+//        .enter().append("tr");
+//
+//    var td = tr.selectAll("td")
+//        .data(function(d) { return d; })
+//        .enter().append("td")
+//        .text(function(d) { return d; });
+
+    var rectData = [
+        {x:100, y: 200},
+        {x:300, y:400}
+        ];
+
+    var tr = d3.select("body").append("table").selectAll("tr")
+        .data(rectData)
+        .enter().append("tr");
+
+    var td = tr.selectAll("td")
+        .data(function(d) { return d; })
+        .enter().append("td")
+        .text(function(d) { return d; });
+</script>
+</body>
+</html>

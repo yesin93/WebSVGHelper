@@ -120,20 +120,28 @@ d3.createNewLayer =  function(options){
 };
 
 //adding a shape to a particular grouping
-function addLayerToGrouping(layerID, groupingID, shapeType, shapeObj, customAttr){
+function addShapeToGrouping(layerID, groupingID, shapeType, shapeObj, customAttr){
 
     $.each(shapesJSObj.layers, function(i,d){
+
+        var shapes = {};
+
+        shapes["type"]=shapeType;
+        shapes["parent"] = groupingID;
+        shapes["coords"]=shapeObj;
+        shapes["customAttr"] = customAttr;
 
         if(d.layerID === layerID){
             console.log(layerID);
             $.each(d.contents, function(i,d){
                 if(d.idGroupEl === groupingID) {
-                    d.shapes.push(shapeObj);
+                    d.shapes.push(shapes);
                 }
             });
         }
 
-    });
+    })
+
     console.log(shapesJSObj);
 }
 
@@ -200,14 +208,18 @@ d3.addGroupEl = function(layerID, options){
     var grouping = $.extend({
         idGroupEl: groupingID,
         name: "default",
-        shapes:[]
+        shapes:[],
+        parentID: layerID
     },options);
 
-    d3.select('#'+layerID)
+   var group =  d3.select('#'+layerID)
         .append('g')
         .attr('name', grouping.name)
         .attr('id', grouping.idGroupEl);
 
+   console.log(group);
+
+   //push the grouping information to the WebHelper Obj
     $.each(shapesJSObj.layers, function (i, d) {
         if(d.layerID === layerID){
             d.contents.push(grouping);
@@ -220,7 +232,7 @@ d3.addGroupEl = function(layerID, options){
  * Temporary test method Draw a rectangle on given SVG layer
  */
 d3.drawCircle = function(grouping, options){
-    console.log(grouping);
+
 
     var properties = $.extend({
         cx: 200,
@@ -229,18 +241,20 @@ d3.drawCircle = function(grouping, options){
         fill: "red"
     }, options);
 
+    var shapeType = "circle";
+
     var circle = d3.select('#'+grouping).append("circle")
         .attr("cx", properties.cx)
         .attr("cy",properties.cy)
         .attr("r", properties.r)
         .attr("fill", properties.fill);
 
+    console.log(circle);
 
-    var shapeType = "circle";
-    var layerID = grouping;
+    var layerID = "layer1";
     var customAttr;
 
-    addLayerToGrouping(layerID, groupingID, shapeType, circle, customAttr);
+    addShapeToGrouping(layerID, grouping, shapeType, properties, customAttr);
 };
 
 /*
@@ -302,3 +316,4 @@ d3.layerAscend = function(raiseBy){
 
 //bring svg to the back of given layer
 
+//Draw a rectangle through mouse

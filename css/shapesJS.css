@@ -18,3 +18,13 @@ h1{
     width: 100%; /* only required for <img /> */
     z-index: 0;
 }
+
+svg {
+    border: solid 1px rgba(221, 61, 16, 0.71);
+}
+
+rect {
+    fill: lightblue;
+    stroke: blue;
+    stroke-width: 2px;
+}
