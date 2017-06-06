@@ -9,4 +9,3 @@ target
 *.ipr
 .idea
 *.ids
-js/shapesJSON.js

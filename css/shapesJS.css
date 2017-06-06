@@ -28,3 +28,9 @@ rect {
     stroke: blue;
     stroke-width: 2px;
 }
+
+circle {
+    fill: lightgreen;
+    stroke: green;
+    stroke-width: 2px;
+}

@@ -12,6 +12,11 @@
 </head>
 <body>
 <button id='rectangle'>Rectangle</button>
+<button id="circle">Circle</button>
+<div id="rectangle-container"></div>
+<div id="circle-container">
+    <svg id="circle-svg" width="600" height="500"></svg>
+</div>
 <!--<button id='rectangle'>Rectangle</button>-->
 <!--<script src="../js/drawRect.js"></script>-->
 <!--<script src="../js/app.js"></script>-->
@@ -19,18 +24,21 @@
     d3.select('#rectangle').on('click', function(){ new Rectangle(); });
 
     var w = 600, h = 500;
-    var svg = d3.select('body').append('svg').attr({width: w, height: h});
+    var svg = d3.select('#rectangle-container').append('svg').attr({width: w, height: h}).attr("id", "rectangle-svg");
 
     function Rectangle() {
         var self = this, rect, rectData = [], isDown = false, m1, m2, isDrag = false;
 
         svg.on('mousedown', function() {
             m1 = d3.mouse(this);
+            console.log(m1);
             if (!isDown && !isDrag) {
                 self.rectData = [ { x: m1[0], y: m1[1] }, { x: m1[0], y: m1[1] } ];
-                self.rectangleElement = d3.select('svg').append('rect').attr('class', 'rectangle').call(dragR);
-                self.pointElement1 = d3.select('svg').append('circle').attr('class', 'pointC').call(dragC1);
-                self.pointElement2 = d3.select('svg').append('circle').attr('class', 'pointC').call(dragC2);
+
+                self.rectangleElement = d3.select('#rectangle-svg').append('rect').attr('class', 'rectangle').call(dragR);
+                console.log(self.rectangleElement);
+                self.pointElement1 = d3.select('#rectangle-svg').append('circle').attr('class', 'pointC').call(dragC1);
+                self.pointElement2 = d3.select('#rectangle-svg').append('circle').attr('class', 'pointC').call(dragC2);
                 self.pointElement3 = svg.append('circle').attr('class', 'pointC').call(dragC3);
                 self.pointElement4 = svg.append('circle').attr('class', 'pointC').call(dragC4);
                 updateRect();
@@ -79,6 +87,7 @@
                 .attr('cy', self.rectData[0].y);
             console.log("point1 x" + self.rectData[0].x);
             console.log("point1 y" + self.rectData[0].y);
+            console.log(point1);
 
             var point2 = d3.select(self.pointElement2[0][0]).data(self.rectData);
             point2.attr('r', 5)
@@ -86,6 +95,7 @@
                 .attr('cy', self.rectData[1].y);
             console.log("point2 y" + self.rectData[1].x);
             console.log("point2 y" + self.rectData[1].y);
+            console.log(point2);
 
             var point3 = d3.select(self.pointElement3[0][0]).data(self.rectData);
             point3.attr('r', 5)
@@ -93,6 +103,7 @@
                 .attr('cy', self.rectData[0].y);
             console.log("point3 y" + self.rectData[1].x);
             console.log("point3 y" + self.rectData[0].y);
+            console.log(point3);
 
             var point3 = d3.select(self.pointElement4[0][0]).data(self.rectData);
             point3.attr('r', 5)
@@ -100,12 +111,14 @@
                 .attr('cy', self.rectData[1].y);
             console.log(self.rectData[0].x);
             console.log(self.rectData[1].y);
+            console.log(point3);
         }
 
         var dragR = d3.behavior.drag().on('drag', dragRect);
 
         function dragRect() {
             var e = d3.event;
+            console.log("rect drag fired");
             for(var i = 0; i < self.rectData.length; i++){
                 d3.select(self.rectangleElement[0][0])
                     .attr('x', self.rectData[i].x += e.dx )
@@ -154,6 +167,87 @@
 
     }//end Rectangle
 
+</script>
+
+<script>
+    d3.select('#circle').on('click', drawCircle);
+
+    function drawCircle() {
+
+
+        function getRadius(x1, y1, x2, y2) {
+            return Math.sqrt((Math.pow(x2 - x1, 2) + (Math.pow(y2 - y1, 2))));
+        }
+
+        var circle, isDown = false, cDown = false, isDragging = false, isResize = false, m1, m2,
+            width = 600, height = 500, cx = 0, cy = 0, radius = 0;
+
+        var drag = d3.behavior.drag()
+            .on("drag", dragmove);
+
+        function dragmove() {
+            var initialX = this.getAttribute("cx"), initialY = this.getAttribute("cy");
+
+
+            if (isResize) {
+                d3.select(this).attr("r", getRadius(+initialX, +initialY, d3.event.x, d3.event.y));
+            }
+            else {
+                d3.select(this)
+                    .attr("cx", +initialX + d3.event.dx)
+                    .attr("cy", +initialY + d3.event.dy);
+            }
+        }
+
+//    var vis = d3.select("#circle-container").append("svg").attr("width", width).attr("height", height).attr("id", "circle-container");
+        var vis = d3.select('#circle-svg');
+        vis.on("mousedown", mousedown1);
+
+
+        function mousedown1() {
+            if (!isDown && !isDragging) {
+                m1 = d3.mouse(this);
+                circle = vis.append("circle")
+                    .attr("cx", m1[0])
+                    .attr("cy", m1[1])
+                    .attr("r", 0)//;
+                    .call(drag);
+            } else {
+                cDown = !cDown;
+                circle.on("mousedown", mousedown2);
+                function mousedown2(e) {
+                    var initialX = this.getAttribute("cx"),
+                        initialY = this.getAttribute("cy"),
+                        rightEdge = +this.getAttribute("cx") + +this.getAttribute("r"),
+                        mouse = d3.mouse(this);
+
+                    console.log()
+                    isDragging = true;
+                    if (rightEdge <= mouse[0] + 5 && rightEdge >= mouse[0] - 5) {
+                        isResize = true;
+                    }
+
+                }
+
+                circle.on("mouseup", mouseup);
+                function mouseup(e) {
+                    isDragging = isDown = isResize = false;
+                    cDown = !cDown;
+                }
+            }
+            isDown = !isDown;
+        }
+
+        vis.on("mousemove", mousemove);
+        function mousemove() {
+            m2 = d3.mouse(this);
+            if (isDown && !isDragging) {
+                m2 = d3.mouse(this);
+                circle.attr("r", getRadius(m1[0], m1[1], m2[0], m2[1]));
+            }
+        }
+
+    }
 </script>
 </body>
 </html>
