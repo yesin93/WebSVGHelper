@@ -20,11 +20,11 @@
 
     function Rectangle() {
 
-        var rectData = [];
-        var shape = {};
+        var rectData = []; //holds the diagonal point 1 and 2 coordinates of the rectangle
+        var shape = {}; //will hold the rectangle's d3 selection
         var p1, p2;
-        var start;
-        var edge;
+        var start; //starting point
+        var edge; //ending point
 
        var rectangleDrag =  svg.call(d3.drag().on("start", initialPlod)
                                                 .on('drag', secondaryPlod)
@@ -54,6 +54,9 @@
         function onStopDraw(){
             console.log("drag end executed");
             var dragR = d3.select(shape.rectEl._groups[0][0]).call(d3.drag().on("drag", dragRect));
+            rectangleDrag.call(d3.drag().on("start", null)
+                .on('drag', null)
+                .on('end', null));
         }
 
         //grab and drag rectangle
@@ -83,39 +86,39 @@
                         .attr("height",height);
 
 //            console.log( shape.rectEl);
-            //the drag points
-//            var point1 = d3.select(shape.pointEl1._groups[0][0]);
-//            console.log(rectData);
-//            point1.attr('r', 5)
-//                .attr('cx', rectData[0].x)
-//                .attr('cy', rectData[0].y);
-//            console.log("point1 x " + rectData[0].x);
-//            console.log("point1 y " + rectData[0].y);
-//            console.log(point1);
-//
-//            var point2 = d3.select(shape.pointEl2._groups[0][0]);
-//            point2.attr('r', 5)
-//                .attr('cx', rectData[1].x)
-//                .attr('cy', rectData[1].y);
-//            console.log("point2 x " + rectData[1].x);
-//            console.log("point2 y " + rectData[1].y);
-//            console.log(point2);
-//
-//            var point3 = d3.select(shape.pointEl3._groups[0][0]);
-//            point3.attr('r', 5)
-//                .attr('cx', rectData[1].x)
-//                .attr('cy', rectData[0].y);
-//            console.log("point3 x " + rectData[1].x);
-//            console.log("point3 y " + rectData[0].y);
-//            console.log(point3);
-//
-//            var point4 = d3.select(shape.pointEl4._groups[0][0]);
-//            point3.attr('r', 5)
-//                .attr('cx', rectData[0].x)
-//                .attr('cy', rectData[1].y);
-//            console.log("point4 y " + rectData[0].x);
-//            console.log("point4 y " + rectData[1].y);
-//            console.log(point4);
+//            the drag points
+            var point1 = d3.select(shape.pointEl1._groups[0][0]);
+            console.log(rectData);
+            point1.attr('r', 4)
+                .attr('cx', rectData[0].x)
+                .attr('cy', rectData[0].y);
+            console.log("point1 x " + rectData[0].x);
+            console.log("point1 y " + rectData[0].y);
+            console.log(point1);
+
+            var point2 = d3.select(shape.pointEl2._groups[0][0]);
+            point2.attr('r', 4)
+                .attr('cx', rectData[1].x)
+                .attr('cy', rectData[1].y);
+            console.log("point2 x " + rectData[1].x);
+            console.log("point2 y " + rectData[1].y);
+            console.log(point2);
+
+            var point3 = d3.select(shape.pointEl3._groups[0][0]);
+            point3.attr('r', 4)
+                .attr('cx', rectData[1].x)
+                .attr('cy', rectData[0].y);
+            console.log("point3 x " + rectData[1].x);
+            console.log("point3 y " + rectData[0].y);
+            console.log(point3);
+
+            var point4 = d3.select(shape.pointEl4._groups[0][0]);
+            point3.attr('r', 4)
+                .attr('cx', rectData[0].x)
+                .attr('cy', rectData[1].y);
+            console.log("point4 y " + rectData[0].x);
+            console.log("point4 y " + rectData[1].y);
+            console.log(point4);
         }
 //if(shape.rectEl._groups[0][0] !== null) {
 
