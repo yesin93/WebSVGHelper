@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Rectangle Draw</title>
     <link href="../css/shapesJS.css" rel="stylesheet" type="text/css"/>
     <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.0/d3.min.js"></script>-->
     <!--<script src="https://d3js.org/d3.v4.min.js"></script>-->
@@ -26,7 +26,7 @@
         var start; //starting point
         var edge; //ending point
 
-       var rectangleDrag =  svg.call(d3.drag().on("start", initialPlod)
+        var rectangleDrag =  svg.call(d3.drag().on("start", initialPlod)
                                                 .on('drag', secondaryPlod)
                                                 .on('end', onStopDraw));
 
@@ -35,11 +35,10 @@
             start = d3.mouse(this);
                 rectData = [{x:start[0], y:start[1]}, {x:start[0], y:start[1]}];
                 shape.rectEl = svg.append('rect').attr('class', 'rectangle');
-                shape.pointEl1 = svg.append('circle').attr('class', 'pointC');
-                shape.pointEl2 = svg.append('circle').attr('class', 'pointC');
-                shape.pointEl3 = svg.append('circle').attr('class', 'pointC');
-                shape.pointEl4 = svg.append('circle').attr('class', 'pointC');
-                console.log(shape);
+                shape.pointEl1 = svg.append('circle').attr('class', 'pointC').call(dragP1);
+                shape.pointEl2 = svg.append('circle').attr('class', 'pointC').call(dragP2);
+                shape.pointEl3 = svg.append('circle').attr('class', 'pointC').call(dragP3);
+                shape.pointEl4 = svg.append('circle').attr('class', 'pointC').call(dragP4);
                 renderRectangle();
         }
 
@@ -52,7 +51,7 @@
 
         //on stop drawing bind a drag event
         function onStopDraw(){
-            console.log("drag end executed");
+//            console.log("drag end executed");
             var dragR = d3.select(shape.rectEl._groups[0][0]).call(d3.drag().on("drag", dragRect));
             rectangleDrag.call(d3.drag().on("start", null)
                 .on('drag', null)
@@ -62,7 +61,7 @@
         //grab and drag rectangle
         function dragRect() {
             var move = d3.event;
-            console.log("drag rectangle executed");
+//            console.log("drag rectangle executed");
             for(var i = 0; i < rectData.length; i++){
                 var drawnRectangle = d3.select(shape.rectEl._groups[0][0])
                     .attr('x', rectData[i].x += move.dx )
@@ -73,6 +72,7 @@
         }
 
         function renderRectangle(){
+
             //rectangle attributes
             var xCoord = rectData[1].x - rectData[0].x > 0 ? rectData[0].x :  rectData[1].x;
             var yCoord = rectData[1].y - rectData[0].y > 0 ? rectData[0].y :  rectData[1].y;
@@ -85,50 +85,76 @@
                         .attr("width",width)
                         .attr("height",height);
 
-//            console.log( shape.rectEl);
-//            the drag points
+            //drag point 1 left-top
             var point1 = d3.select(shape.pointEl1._groups[0][0]);
-            console.log(rectData);
             point1.attr('r', 4)
                 .attr('cx', rectData[0].x)
                 .attr('cy', rectData[0].y);
-            console.log("point1 x " + rectData[0].x);
-            console.log("point1 y " + rectData[0].y);
-            console.log(point1);
+//                .data(rectData);
 
+            //drag point 2 right-bottom
             var point2 = d3.select(shape.pointEl2._groups[0][0]);
             point2.attr('r', 4)
                 .attr('cx', rectData[1].x)
                 .attr('cy', rectData[1].y);
-            console.log("point2 x " + rectData[1].x);
-            console.log("point2 y " + rectData[1].y);
-            console.log(point2);
+//                .data(rectData);
 
+            //drag point 2 right-top
             var point3 = d3.select(shape.pointEl3._groups[0][0]);
             point3.attr('r', 4)
                 .attr('cx', rectData[1].x)
                 .attr('cy', rectData[0].y);
-            console.log("point3 x " + rectData[1].x);
-            console.log("point3 y " + rectData[0].y);
-            console.log(point3);
+//                .data(rectData);
 
+
+            //drag point 1 left-bottom
             var point4 = d3.select(shape.pointEl4._groups[0][0]);
-            point3.attr('r', 4)
+            point4.attr('r', 4)
                 .attr('cx', rectData[0].x)
                 .attr('cy', rectData[1].y);
-            console.log("point4 y " + rectData[0].x);
-            console.log("point4 y " + rectData[1].y);
-            console.log(point4);
+//                .data(rectData);
         }
-//if(shape.rectEl._groups[0][0] !== null) {
 
-//            console.log(shape.rectEl);
-//}
+        //drag point logic
+        var dragP1 = d3.drag().on('drag', dragPoint1);
+        var dragP2 = d3.drag().on('drag', dragPoint2);
+        var dragP3 = d3.drag().on('drag', dragPoint3);
+        var dragP4 = d3.drag().on('drag', dragPoint4);
+
+
+        function dragPoint1() {
+            var move = d3.event;
+            d3.select(shape.pointEl2._groups[0][0])
+                .attr('cx', rectData[0].x += move.dx )
+                .attr('cy', rectData[0].y += move.dy );
+            renderRectangle()
+        }
+
+        function dragPoint2() {
+            var move = d3.event;
+            d3.select(shape.pointEl2._groups[0][0])
+                .attr('cx', rectData[1].x += move.dx )
+                .attr('cy', rectData[1].y += move.dy );
+            renderRectangle()
+        }
+
+        function dragPoint3() {
+            var move = d3.event;
+            d3.select(shape.pointEl3._groups[0][0])
+                .attr('cx', rectData[1].x += move.dx )
+                .attr('cy', rectData[0].y += move.dy );
+            renderRectangle()
+        }
+
+        function dragPoint4() {
+            var e = d3.event;
+            d3.select(shape.pointEl4._groups[0][0])
+                .attr('cx', rectData[0].x += e.dx )
+                .attr('cy', rectData[1].y += e.dy );
+            renderRectangle()
+        }
 
 }
-
-
-//    var point1Drag =
 
 </script>
 
