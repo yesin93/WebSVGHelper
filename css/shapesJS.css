@@ -34,3 +34,15 @@ circle {
     stroke: green;
     stroke-width: 2px;
 }
+
+.rect-active {
+    fill: #1578db;
+}
+
+.pointC-active{
+    fill: #FF8F00;
+}
+
+.circle-active{
+    fill: #4CAF50;
+}

@@ -51,11 +51,42 @@
 
         //on stop drawing bind a drag event
         function onStopDraw(){
-//            console.log("drag end executed");
-            var dragR = d3.select(shape.rectEl._groups[0][0]).call(d3.drag().on("drag", dragRect));
+
+            var rectSelect = d3.select(shape.rectEl._groups[0][0]);
+
+            rectSelect.call(d3.drag().on("drag", dragRect));
+
             rectangleDrag.call(d3.drag().on("start", null)
                 .on('drag', null)
                 .on('end', null));
+
+            //highlight rectangle selection
+            rectSelect.on("mouseover", highlight)
+                .on("mouseout", unhighlight);
+
+            function highlight(){
+                d3.select(this).classed('rect-active', true);
+            }
+
+            function unhighlight(){
+                d3.select(this).classed('rect-active', false);
+            }
+
+            var pointSelect = d3.selectAll('.pointC');
+            console.log(pointSelect);
+
+            //highlight selector point selection
+            pointSelect.on("mouseover", light)
+                .on("mouseout", unlight);
+
+            function light(){
+                console.log("pointHover");
+                d3.select(this).classed('pointC-active', true);
+            }
+
+            function unlight(){
+                d3.select(this).classed('pointC-active', false);
+            }
         }
 
         //grab and drag rectangle
