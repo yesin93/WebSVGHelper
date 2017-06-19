@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Sri Lanka</title>
+    <title>Example Circle Draw</title>
     <link href="../css/shapesJS.css" rel="stylesheet" type="text/css"/>
     <link href="../css/app.css" rel="stylesheet" type="text/css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
@@ -11,188 +11,47 @@
 
 </head>
 <body>
-<button id='rectangle'>Rectangle</button>
+<!--<button id='rectangle'>Rectangle</button>-->
 <button id="circle">Circle</button>
-<div id="rectangle-container"></div>
+<!--<div id="rectangle-container"></div>-->
 <div id="circle-container">
     <svg id="circle-svg" width="600" height="500"></svg>
 </div>
 <!--<button id='rectangle'>Rectangle</button>-->
 <!--<script src="../js/drawRect.js"></script>-->
 <!--<script src="../js/app.js"></script>-->
-<script>
-    d3.select('#rectangle').on('click', function(){ new Rectangle(); });
-
-    var w = 600, h = 500;
-    var svg = d3.select('#rectangle-container').append('svg').attr({width: w, height: h}).attr("id", "rectangle-svg");
-
-    function Rectangle() {
-        var self = this, rect, rectData = [], isDown = false, m1, m2, isDrag = false;
-
-        svg.on('mousedown', function() {
-            m1 = d3.mouse(this);
-            console.log(m1);
-            if (!isDown && !isDrag) {
-                self.rectData = [ { x: m1[0], y: m1[1] }, { x: m1[0], y: m1[1] } ];
-
-                self.rectangleElement = d3.select('#rectangle-svg').append('rect').attr('class', 'rectangle').call(dragR);
-                console.log(self.rectangleElement);
-                self.pointElement1 = d3.select('#rectangle-svg').append('circle').attr('class', 'pointC').call(dragC1);
-                self.pointElement2 = d3.select('#rectangle-svg').append('circle').attr('class', 'pointC').call(dragC2);
-                self.pointElement3 = svg.append('circle').attr('class', 'pointC').call(dragC3);
-                self.pointElement4 = svg.append('circle').attr('class', 'pointC').call(dragC4);
-                updateRect();
-                isDrag = false;
-            } else {
-                isDrag = true;
-            }
-            isDown = !isDown;
-        })
-
-            .on('mousemove', function() {
-                m2 = d3.mouse(this);
-                if(isDown && !isDrag) {
-                    self.rectData[1] = { x: m2[0], y: m2[1] };
-                    updateRect();
-                }
-            });
-
-        function updateRect() {
-            rect = d3.select(self.rectangleElement[0][0]);
-            console.log(self.rectangleElement[0][0]);
-
-            var xCoord = self.rectData[1].x - self.rectData[0].x > 0 ? self.rectData[0].x :  self.rectData[1].x;
-            var yCoord = self.rectData[1].y - self.rectData[0].y > 0 ? self.rectData[0].y :  self.rectData[1].y;
-            var width = Math.abs(self.rectData[1].x - self.rectData[0].x);
-            var height = Math.abs(self.rectData[1].y - self.rectData[0].y);
-
-            // updating rectangle attributes on the svg
-            rect.attr({
-                x: self.rectData[1].x - self.rectData[0].x > 0 ? self.rectData[0].x :  self.rectData[1].x,
-                y: self.rectData[1].y - self.rectData[0].y > 0 ? self.rectData[0].y :  self.rectData[1].y,
-                width: Math.abs(self.rectData[1].x - self.rectData[0].x), //getting the difference in coordinates to get width
-                height: Math.abs(self.rectData[1].y - self.rectData[0].y)
-            });
-
-//            console.log(xCoord);
-//            console.log(yCoord);
-//            console.log(width);
-//            console.log(height);
-
-            //updating the rectangle points on the SVG each time
-            var point1 = d3.select(self.pointElement1[0][0]).data(self.rectData);
-            console.log(self.rectData);
-            point1.attr('r', 5)
-                .attr('cx', self.rectData[0].x)
-                .attr('cy', self.rectData[0].y);
-            console.log("point1 x" + self.rectData[0].x);
-            console.log("point1 y" + self.rectData[0].y);
-            console.log(point1);
-
-            var point2 = d3.select(self.pointElement2[0][0]).data(self.rectData);
-            point2.attr('r', 5)
-                .attr('cx', self.rectData[1].x)
-                .attr('cy', self.rectData[1].y);
-            console.log("point2 y" + self.rectData[1].x);
-            console.log("point2 y" + self.rectData[1].y);
-            console.log(point2);
-
-            var point3 = d3.select(self.pointElement3[0][0]).data(self.rectData);
-            point3.attr('r', 5)
-                .attr('cx', self.rectData[1].x)
-                .attr('cy', self.rectData[0].y);
-            console.log("point3 y" + self.rectData[1].x);
-            console.log("point3 y" + self.rectData[0].y);
-            console.log(point3);
-
-            var point3 = d3.select(self.pointElement4[0][0]).data(self.rectData);
-            point3.attr('r', 5)
-                .attr('cx', self.rectData[0].x)
-                .attr('cy', self.rectData[1].y);
-            console.log(self.rectData[0].x);
-            console.log(self.rectData[1].y);
-            console.log(point3);
-        }
-
-        var dragR = d3.behavior.drag().on('drag', dragRect);
-
-        function dragRect() {
-            var e = d3.event;
-            console.log("rect drag fired");
-            for(var i = 0; i < self.rectData.length; i++){
-                d3.select(self.rectangleElement[0][0])
-                    .attr('x', self.rectData[i].x += e.dx )
-                    .attr('y', self.rectData[i].y += e.dy );
-            }
-            rect.style('cursor', 'move');
-            updateRect();
-        }
-
-        var dragC1 = d3.behavior.drag().on('drag', dragPoint1);
-        var dragC2 = d3.behavior.drag().on('drag', dragPoint2);
-        var dragC3 = d3.behavior.drag().on('drag', dragPoint3);
-        var dragC4 = d3.behavior.drag().on('drag', dragPoint4);
-
-        function dragPoint1() {
-            var e = d3.event;
-            d3.select(self.pointElement1[0][0])
-                .attr('cx', function(d) { return d.x += e.dx })
-                .attr('cy', function(d) { return d.y += e.dy });
-            updateRect();
-        }
-
-        function dragPoint2() {
-            var e = d3.event;
-            d3.select(self.pointElement2[0][0])
-                .attr('cx', self.rectData[1].x += e.dx )
-                .attr('cy', self.rectData[1].y += e.dy );
-            updateRect();
-        }
-
-        function dragPoint3() {
-            var e = d3.event;
-            d3.select(self.pointElement3[0][0])
-                .attr('cx', self.rectData[1].x += e.dx )
-                .attr('cy', self.rectData[0].y += e.dy );
-            updateRect();
-        }
-
-        function dragPoint4() {
-            var e = d3.event;
-            d3.select(self.pointElement4[0][0])
-                .attr('cx', self.rectData[0].x += e.dx )
-                .attr('cy', self.rectData[1].y += e.dy );
-            updateRect();
-        }
-
-    }//end Rectangle
-
-</script>
 
 <script>
     d3.select('#circle').on('click', drawCircle);
 
     function drawCircle() {
-
-
-        function getRadius(x1, y1, x2, y2) {
-            return Math.sqrt((Math.pow(x2 - x1, 2) + (Math.pow(y2 - y1, 2))));
-        }
-
         var circle, isDown = false, cDown = false, isDragging = false, isResize = false, m1, m2,
             width = 600, height = 500, cx = 0, cy = 0, radius = 0;
 
+        //calling the circle rendering method
         var drag = d3.behavior.drag()
             .on("drag", dragmove);
 
+        //get radius
+        function getRadius(x1, y1, x2, y2) {
+
+            return Math.sqrt((Math.pow(x2 - x1, 2) + (Math.pow(y2 - y1, 2))));
+
+        }
+
+        //when dragging the circle
         function dragmove() {
+
+            //returns attribute value
             var initialX = this.getAttribute("cx"), initialY = this.getAttribute("cy");
 
-
             if (isResize) {
+                console.log("getting radius for dragmove resize");
                 d3.select(this).attr("r", getRadius(+initialX, +initialY, d3.event.x, d3.event.y));
+
             }
             else {
+                console.log("updating coordinates of the circle");
                 d3.select(this)
                     .attr("cx", +initialX + d3.event.dx)
                     .attr("cy", +initialY + d3.event.dy);
@@ -200,12 +59,16 @@
         }
 
 //    var vis = d3.select("#circle-container").append("svg").attr("width", width).attr("height", height).attr("id", "circle-container");
+
+
         var vis = d3.select('#circle-svg');
         vis.on("mousedown", mousedown1);
 
-
+        //drawing circle
         function mousedown1() {
+
             if (!isDown && !isDragging) {
+                console.log("setting initial circle attribute on mousedown");
                 m1 = d3.mouse(this);
                 circle = vis.append("circle")
                     .attr("cx", m1[0])
@@ -213,20 +76,22 @@
                     .attr("r", 0)//;
                     .call(drag);
             } else {
+                console.log("stop drawing condition executed on 2nd mouse down");
                 cDown = !cDown;
                 circle.on("mousedown", mousedown2);
                 function mousedown2(e) {
+//                    console.log("getting radius for dragmove");
                     var initialX = this.getAttribute("cx"),
                         initialY = this.getAttribute("cy"),
                         rightEdge = +this.getAttribute("cx") + +this.getAttribute("r"),
                         mouse = d3.mouse(this);
+                        console.log(this.getAttribute("cx"));
+                        console.log(rightEdge);
 
-                    console.log()
                     isDragging = true;
-                    if (rightEdge <= mouse[0] + 5 && rightEdge >= mouse[0] - 5) {
+                    if (rightEdge <= mouse[0] + 10 && rightEdge >= mouse[0] - 10) {
                         isResize = true;
                     }
-
                 }
 
                 circle.on("mouseup", mouseup);
@@ -238,9 +103,12 @@
             isDown = !isDown;
         }
 
+        //for updating size
         vis.on("mousemove", mousemove);
         function mousemove() {
+//            console.log("mousemove method fired");
             m2 = d3.mouse(this);
+            //executed when mouse down and dragging only
             if (isDown && !isDragging) {
                 m2 = d3.mouse(this);
                 circle.attr("r", getRadius(m1[0], m1[1], m2[0], m2[1]));
@@ -249,5 +117,163 @@
 
     }
 </script>
+<!--<script>-->
+    <!--d3.select('#rectangle').on('click', function(){ new Rectangle(); });-->
+
+    <!--var w = 600, h = 500;-->
+    <!--var svg = d3.select('#rectangle-container').append('svg').attr({width: w, height: h}).attr("id", "rectangle-svg");-->
+
+    <!--function Rectangle() {-->
+        <!--var self = this, rect, rectData = [], isDown = false, m1, m2, isDrag = false;-->
+
+        <!--svg.on('mousedown', function() {-->
+            <!--m1 = d3.mouse(this);-->
+<!--//            console.log(m1);-->
+            <!--if (!isDown && !isDrag) {-->
+                <!--self.rectData = [ { x: m1[0], y: m1[1] }, { x: m1[0], y: m1[1] } ];-->
+
+                <!--self.rectangleElement = d3.select('#rectangle-svg').append('rect').attr('class', 'rectangle').call(dragR);-->
+<!--//                console.log(self.rectangleElement);-->
+                <!--self.pointElement1 = d3.select('#rectangle-svg').append('circle').attr('class', 'pointC').call(dragC1);-->
+                <!--self.pointElement2 = d3.select('#rectangle-svg').append('circle').attr('class', 'pointC').call(dragC2);-->
+                <!--self.pointElement3 = svg.append('circle').attr('class', 'pointC').call(dragC3);-->
+                <!--self.pointElement4 = svg.append('circle').attr('class', 'pointC').call(dragC4);-->
+                <!--updateRect();-->
+                <!--isDrag = false;-->
+            <!--} else {-->
+                <!--isDrag = true;-->
+            <!--}-->
+            <!--isDown = !isDown;-->
+        <!--})-->
+
+            <!--.on('mousemove', function() {-->
+                <!--m2 = d3.mouse(this);-->
+                <!--if(isDown && !isDrag) {-->
+                    <!--self.rectData[1] = { x: m2[0], y: m2[1] };-->
+                    <!--updateRect();-->
+                <!--}-->
+            <!--});-->
+
+        <!--function updateRect() {-->
+            <!--rect = d3.select(self.rectangleElement[0][0]);-->
+<!--//            console.log(self.rectangleElement[0][0]);-->
+
+            <!--var xCoord = self.rectData[1].x - self.rectData[0].x > 0 ? self.rectData[0].x :  self.rectData[1].x;-->
+            <!--var yCoord = self.rectData[1].y - self.rectData[0].y > 0 ? self.rectData[0].y :  self.rectData[1].y;-->
+            <!--var width = Math.abs(self.rectData[1].x - self.rectData[0].x);-->
+            <!--var height = Math.abs(self.rectData[1].y - self.rectData[0].y);-->
+
+            <!--// updating rectangle attributes on the svg-->
+            <!--rect.attr({-->
+                <!--x: self.rectData[1].x - self.rectData[0].x > 0 ? self.rectData[0].x :  self.rectData[1].x,-->
+                <!--y: self.rectData[1].y - self.rectData[0].y > 0 ? self.rectData[0].y :  self.rectData[1].y,-->
+                <!--width: Math.abs(self.rectData[1].x - self.rectData[0].x), //getting the difference in coordinates to get width-->
+                <!--height: Math.abs(self.rectData[1].y - self.rectData[0].y)-->
+            <!--});-->
+
+<!--//            console.log(xCoord);-->
+<!--//            console.log(yCoord);-->
+<!--//            console.log(width);-->
+<!--//            console.log(height);-->
+
+            <!--//updating the rectangle points on the SVG each time-->
+            <!--var point1 = d3.select(self.pointElement1[0][0]).data(self.rectData);-->
+<!--//            console.log(self.rectData);-->
+            <!--point1.attr('r', 5)-->
+                <!--.attr('cx', self.rectData[0].x)-->
+                <!--.attr('cy', self.rectData[0].y);-->
+<!--//            console.log("point1 x" + self.rectData[0].x);-->
+<!--//            console.log("point1 y" + self.rectData[0].y);-->
+<!--//            console.log(point1);-->
+
+            <!--var point2 = d3.select(self.pointElement2[0][0]).data(self.rectData);-->
+            <!--point2.attr('r', 5)-->
+                <!--.attr('cx', self.rectData[1].x)-->
+                <!--.attr('cy', self.rectData[1].y);-->
+<!--//            console.log("point2 y" + self.rectData[1].x);-->
+<!--//            console.log("point2 y" + self.rectData[1].y);-->
+<!--//            console.log(point2);-->
+
+            <!--var point3 = d3.select(self.pointElement3[0][0]).data(self.rectData);-->
+            <!--point3.attr('r', 5)-->
+                <!--.attr('cx', self.rectData[1].x)-->
+                <!--.attr('cy', self.rectData[0].y);-->
+<!--//            console.log("point3 y" + self.rectData[1].x);-->
+<!--//            console.log("point3 y" + self.rectData[0].y);-->
+<!--//            console.log(point3);-->
+
+            <!--var point3 = d3.select(self.pointElement4[0][0]).data(self.rectData);-->
+            <!--point3.attr('r', 5)-->
+                <!--.attr('cx', self.rectData[0].x)-->
+                <!--.attr('cy', self.rectData[1].y);-->
+<!--//            console.log(self.rectData[0].x);-->
+<!--//            console.log(self.rectData[1].y);-->
+<!--//            console.log(point3);-->
+        <!--}-->
+
+        <!--var dragR = d3.behavior.drag().on('drag', dragRect);-->
+
+        <!--function dragRect() {-->
+            <!--var e = d3.event;-->
+<!--//            console.log("rect drag fired");-->
+            <!--for(var i = 0; i < self.rectData.length; i++){-->
+                <!--d3.select(self.rectangleElement[0][0])-->
+                    <!--.attr('x', self.rectData[i].x += e.dx )-->
+                    <!--.attr('y', self.rectData[i].y += e.dy );-->
+            <!--}-->
+            <!--rect.style('cursor', 'move');-->
+            <!--updateRect();-->
+        <!--}-->
+
+        <!--var dragC1 = d3.behavior.drag().on('drag', dragPoint1);-->
+        <!--var dragC2 = d3.behavior.drag().on('drag', dragPoint2);-->
+        <!--var dragC3 = d3.behavior.drag().on('drag', dragPoint3);-->
+        <!--var dragC4 = d3.behavior.drag().on('drag', dragPoint4);-->
+
+        <!--function dragPoint1() {-->
+            <!--var e = d3.event;-->
+<!--//            console.log(self.pointElement1[0][0]);-->
+            <!--d3.select(self.pointElement1[0][0])-->
+                <!--.attr('cx', function(d) { return d.x += e.dx })-->
+                <!--.attr('cy', function(d) { return d.y += e.dy });-->
+            <!--updateRect();-->
+        <!--}-->
+
+<!--//        function dragPoint1() {-->
+<!--//            var e = d3.event;-->
+<!--//            console.log(self.pointElement1[0][0]);-->
+<!--//            d3.select(self.pointElement1[0][0])-->
+<!--//                .attr('cx', self.rectData[0].x += e.dx )-->
+<!--//                .attr('cy', self.rectData[0].y += e.dy );-->
+<!--//            updateRect();-->
+<!--//        }-->
+
+        <!--function dragPoint2() {-->
+            <!--var e = d3.event;-->
+            <!--d3.select(self.pointElement2[0][0])-->
+                <!--.attr('cx', self.rectData[1].x += e.dx )-->
+                <!--.attr('cy', self.rectData[1].y += e.dy );-->
+            <!--updateRect();-->
+        <!--}-->
+
+        <!--function dragPoint3() {-->
+            <!--var e = d3.event;-->
+            <!--d3.select(self.pointElement3[0][0])-->
+                <!--.attr('cx', self.rectData[1].x += e.dx )-->
+                <!--.attr('cy', self.rectData[0].y += e.dy );-->
+            <!--updateRect();-->
+        <!--}-->
+
+        <!--function dragPoint4() {-->
+            <!--var e = d3.event;-->
+            <!--d3.select(self.pointElement4[0][0])-->
+                <!--.attr('cx', self.rectData[0].x += e.dx )-->
+                <!--.attr('cy', self.rectData[1].y += e.dy );-->
+            <!--updateRect();-->
+        <!--}-->
+
+    <!--}//end Rectangle-->
+
+<!--</script>-->
 </body>
 </html>

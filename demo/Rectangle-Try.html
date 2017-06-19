@@ -121,21 +121,18 @@
             point1.attr('r', 4)
                 .attr('cx', rectData[0].x)
                 .attr('cy', rectData[0].y);
-//                .data(rectData);
 
             //drag point 2 right-bottom
             var point2 = d3.select(shape.pointEl2._groups[0][0]);
             point2.attr('r', 4)
                 .attr('cx', rectData[1].x)
                 .attr('cy', rectData[1].y);
-//                .data(rectData);
 
             //drag point 2 right-top
             var point3 = d3.select(shape.pointEl3._groups[0][0]);
             point3.attr('r', 4)
                 .attr('cx', rectData[1].x)
                 .attr('cy', rectData[0].y);
-//                .data(rectData);
 
 
             //drag point 1 left-bottom
@@ -143,7 +140,7 @@
             point4.attr('r', 4)
                 .attr('cx', rectData[0].x)
                 .attr('cy', rectData[1].y);
-//                .data(rectData);
+
         }
 
         //drag point logic

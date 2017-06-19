@@ -12,8 +12,8 @@
     <svg id="circle-svg" width="600" height="500"></svg>
 </div>
 <script>
-
     //properties for circle drawing
+    var shape = {};
     var point1 = [];
     var point2 = [];
     var svgCanvas = d3.select("#circle-svg");
@@ -42,25 +42,42 @@
             .attr("cy", point1[1])
             .attr("r", 0);
 
-        circle2 = svgCanvas.append("circle")
-            .attr("cx", point1[0])
-            .attr("cy", point1[1])
-            .attr("r", 0);
+        console.log("x: " + point1[0]  + "y: " + point1[1] );
+
+        shape.rectEl = svgCanvas.append('rect').attr('class', 'rectangle-bind');
+        shape.pointEl1 = svgCanvas.append('circle').attr('class', 'pointC');
+        shape.pointEl2 = svgCanvas.append('circle').attr('class', 'pointC');
+        shape.pointEl3 = svgCanvas.append('circle').attr('class', 'pointC');
+        shape.pointEl4 = svgCanvas.append('circle').attr('class', 'pointC');
+
     }
 
     //drag point to adjust radius and render circle
     function dragDraw(){
         point2 = d3.mouse(this);
+//        circle.on("mouseover", mousemove);
+//        bboxData = mousemove();
         circle = circle.attr("r", getRadius(point1[0], point1[1], point2[0], point2[1]));
-//        return circle
+//        shape.rectEl.attr("x", mousemove.bbox.x).attr("y", mousemove.bbox.y).attr("height", mousemove.bbox.height).attr("width", mousemove.bbox.x);
+//        console.log("x: " + point1[0]  + "y: " + point1[1] );
     }
 
+
+
+//    function mousemove(d){
+//        var bbox = this.getBBox();
+//        console.log("x: " + bbox.x + ", y: " + bbox.y + ", h: " + bbox.height + ", w: " + bbox.width);
+//        return bbox
+//    };
+
     function selectDrag(){
+        var initialX = this.getAttribute("cx"), initialY = this.getAttribute("cy");
         var mousing = d3.mouse(this);
+        var move = d3.event;
         var mousingX = mousing[0];
         var mousingY = mousing[1];
 //        d3.select(this).attr("cx", mousingX).attr("cy",mousingY).attr("r", getRadius(cX, cY, mousingX, mousingY));
-        d3.select(this).attr("cx", mousingX).attr("cy",mousingY);
+        d3.select(this).attr("cx", mousingX ).attr("cy",mousingY );
     }
 
     function resizingCircle(){

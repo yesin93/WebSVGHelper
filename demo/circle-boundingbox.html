@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Circle draw</title>
+    <link href="../css/shapesJS.css" rel="stylesheet" type="text/css"/>
+    <script src="../libs/d3/d3.min.js"></script>
+</head>
+<body>
+
+<div id="circle-container">
+    <svg id="circle-svg" width="600" height="500"></svg>
+</div>
+
+<script>
+    var svgCanvas = d3.select("#circle-svg");
+    var circle;
+    var gData = {};
+    var shape = {};
+    var gContainer;
+    var point1, point2;
+
+    svgCanvas.call(d3.drag().on("start", initialPlod)
+        .on("drag", dragDraw)
+        .on("end", stopRendering));
+
+    //initial marking of the circle on the canvas
+    function initialPlod(){
+        point1 = d3.mouse(this);
+        gContainer = svgCanvas.append("g");
+        circle = gContainer.append("circle")
+            .attr("cx", point1[0])
+            .attr("cy", point1[1])
+            .attr("r", 0);
+
+//        console.log("x: " + point1[0]  + "y: " + point1[1] );
+
+        shape.rectEl = gContainer.append('rect').attr('class', 'rectangle-bind');
+        shape.pointEl1 = gContainer.append('circle').attr('class', 'pointC');
+        shape.pointEl2 = gContainer.append('circle').attr('class', 'pointC');
+        shape.pointEl3 = gContainer.append('circle').attr('class', 'pointC');
+        shape.pointEl4 = gContainer.append('circle').attr('class', 'pointC');
+
+        //midpoints
+
+//        shape.midpoint1 = gContainer.append('circle').attr('class', 'pointC');
+//        shape.midpoint2 = gContainer.append('circle').attr('class', 'pointC');
+//        shape.midpoint3 = gContainer.append('circle').attr('class', 'pointC');
+//        shape.midpoint4 = gContainer.append('circle').attr('class', 'pointC');
+
+
+    }
+
+    function getRadius(cX, cY, perimeterX, perimeterY){
+        /**
+         * using circle equation
+         *
+         * r2 = (x2 - x1)^2 + (y2 - y1)^2
+         */
+        return Math.sqrt(Math.pow((perimeterX - cX), 2) + Math.pow((perimeterY - cY),2));
+    }
+
+    function dragDraw(){
+        point2 = d3.mouse(this);
+        circle = circle.attr("r", getRadius(point1[0], point1[1], point2[0], point2[1]));
+    }
+
+    function stopRendering() {
+        svgCanvas.call(d3.drag().on("start", null)
+            .on("drag", null)
+            .on("end", null));
+
+        var bbox = this.getBBox();
+
+        //temporary variables that hold original position
+        var circleCords = {
+            x: bbox.x,
+            y: bbox.y
+        };
+
+        //setting the bounding box coordinates to 0 for translate purpose
+        bbox.x = 0;
+        bbox.y = 0;
+
+        //render a bounding box
+        shape.rectEl.attr("x", bbox.x).attr("y", bbox.y).attr("height", bbox.height).attr("width", bbox.width);
+
+        //drag points
+        shape.pointEl1.attr("cx", bbox.x).attr("cy", bbox.y).attr("r", 4);
+        shape.pointEl2.attr("cx", (bbox.x + bbox.width)).attr("cy",(bbox.y + bbox.height)).attr("r",4);
+        shape.pointEl3.attr("cx",bbox.x + bbox.width).attr("cy", bbox.y).attr("r",4);
+        shape.pointEl4.attr("cx",bbox.x).attr("cy", bbox.y + bbox.height).attr("r",4);
+
+        //mid points
+//        shape.midpoint1.attr("cx", (bbox.x + bbox.width)/2).attr("cy", bbox.y).attr("r", 4);
+//        shape.midpoint2.attr("cx", (bbox.x + bbox.width)).attr("cy", (bbox.y + bbox.height)/2).attr("r", 4);
+//        shape.midpoint3.attr("cx", (bbox.x + bbox.width)/2).attr("cy", (bbox.y + bbox.height)).attr("r", 4);
+//        shape.midpoint4.attr("cx", (bbox.x)).attr("cy", (bbox.y + bbox.height)/2).attr("r", 4);
+
+        var circleAttr = {};
+
+        circleAttr.cx = bbox.x + (bbox.width/2);
+        circleAttr.cy = bbox.y + (bbox.height/2);
+        circleAttr.r =  bbox.width/2;
+
+        circle.attr("cx",  circleAttr.cx).attr("cy", circleAttr.cy);
+
+        gData.x = circleCords.x;
+        gData.y = circleCords.y;
+
+        gContainer.attr("transform", "translate(" + circleCords.x + "," + circleCords.y + ")");
+
+        gContainer.call(d3.drag().on("drag", circleDrag));
+
+    }
+
+        function circleDrag(){
+            var move = d3.event;
+            gContainer.attr("transform", "translate(" + (gData.x += move.dx)  + "," + (gData.y += move.dy) + ")");
+    }
+
+        function circle(){
+
+        }
+
+</script>
+</body>
+</html>
