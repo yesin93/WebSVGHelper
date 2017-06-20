@@ -41,6 +41,8 @@ function Rectangle(){
     var edge; //ending point
     var gData = {}; //holds translate values for g element
 
+//    console.log(this);
+
     var rectangleDrag =  svgCanvas.call(d3.drag().on("start", initialPlod)
         .on('drag', secondaryPlod)
         .on('end', onStopDraw));
@@ -69,7 +71,8 @@ function Rectangle(){
             .on('drag', null)
             .on('end', null));
 
-        var bbox = this.getBBox();
+        var bbox = shape.rectEl._groups[0][0].getBBox();
+        console.log(this);
         console.log(bbox);
 
         //temporary variables that hold original position
@@ -216,7 +219,8 @@ function Circle(){
             .on("drag", null)
             .on("end", null));
 
-        var bbox = this.getBBox();
+        var bbox = circle._groups[0][0].getBBox();
+        console.log(this);
         console.log(bbox);
 
         //temporary variables that hold original position
@@ -265,8 +269,14 @@ function Circle(){
     //drag circle
     function circleDrag(){
         var move = d3.event;
+//        console.log(move);
         gContainer.attr("transform", "translate(" + (gData.x += move.dx)  + "," + (gData.y += move.dy) + ")");
     }
+}
+
+function Polygon(){
+
+
 }
 
 

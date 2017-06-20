@@ -53,3 +53,9 @@ circle {
 .circle-active{
     fill: #4CAF50;
 }
+
+path{
+    fill: #ffb7b3;
+    stroke: #ff4736;
+    stroke-width: 5px;
+}
