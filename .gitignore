@@ -9,3 +9,5 @@ target
 *.ipr
 .idea
 *.ids
+
+demo/polygon-example.html

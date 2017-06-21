@@ -59,3 +59,27 @@ path{
     stroke: #ff4736;
     stroke-width: 5px;
 }
+
+polygon{
+    fill: #b6eeff;
+    stroke: #0067ff;
+    stroke-width: 5px;
+}
+
+line{
+    fill: none;
+    stroke: #cd08ff;
+    stroke-width: 2px;
+}
+
+polyline{
+    fill: none;
+    stroke: #563aff;
+    stroke-width: 2px;
+}
+
+circle.handle{
+    fill: yellow;
+    stroke: #cb9c0f;
+    stroke-width: 2px;
+}
