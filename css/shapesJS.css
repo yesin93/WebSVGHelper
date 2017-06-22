@@ -63,7 +63,7 @@ path{
 polygon{
     fill: #b6eeff;
     stroke: #0067ff;
-    stroke-width: 5px;
+    stroke-width: 2px;
 }
 
 line{
@@ -82,4 +82,5 @@ circle.handle{
     fill: yellow;
     stroke: #cb9c0f;
     stroke-width: 2px;
+    cursor: pointer;
 }

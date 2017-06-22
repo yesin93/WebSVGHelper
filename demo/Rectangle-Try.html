@@ -18,173 +18,6 @@
     var w = 600, h = 500;
     var svgCanvas = d3.select('body').append('svg').attr("width", w).attr("height", h);
 
-//    function Rectangle() {
-//
-//        var rectData = []; //holds the diagonal point 1 and 2 coordinates of the rectangle
-//        var shape = {}; //will hold the rectangle's d3 selection
-//        var p1, p2;
-//        var start; //starting point
-//        var edge; //ending point
-//
-//        var rectangleDrag =  svg.call(d3.drag().on("start", initialPlod)
-//                                                .on('drag', secondaryPlod)
-//                                                .on('end', onStopDraw));
-//
-//       //start rendering on drag start
-//        function initialPlod(){
-//            start = d3.mouse(this);
-//                rectData = [{x:start[0], y:start[1]}, {x:start[0], y:start[1]}];
-//                shape.rectEl = svg.append('rect').attr('class', 'rectangle');
-//                shape.pointEl1 = svg.append('circle').attr('class', 'pointC').call(dragP1);
-//                shape.pointEl2 = svg.append('circle').attr('class', 'pointC').call(dragP2);
-//                shape.pointEl3 = svg.append('circle').attr('class', 'pointC').call(dragP3);
-//                shape.pointEl4 = svg.append('circle').attr('class', 'pointC').call(dragP4);
-//                renderRectangle();
-//        }
-//
-//        //when continuing to drag from point 2
-//        function secondaryPlod(){
-//                edge = d3.mouse(this);
-//                rectData[1] = {x: edge[0], y: edge[1]};
-//                renderRectangle();
-//        }
-//
-//        //on stop drawing bind a drag event
-//        function onStopDraw(){
-//
-//            var rectSelect = d3.select(shape.rectEl._groups[0][0]);
-//
-//            rectSelect.call(d3.drag().on("drag", dragRect));
-//
-//            rectangleDrag.call(d3.drag().on("start", null)
-//                .on('drag', null)
-//                .on('end', null));
-//
-//            //highlight rectangle selection
-//            rectSelect.on("mouseover", highlight)
-//                .on("mouseout", unhighlight);
-//
-//            function highlight(){
-//                d3.select(this).classed('rect-active', true);
-//            }
-//
-//            function unhighlight(){
-//                d3.select(this).classed('rect-active', false);
-//            }
-//
-//            var pointSelect = d3.selectAll('.pointC');
-//            console.log(pointSelect);
-//
-//            //highlight selector point selection
-//            pointSelect.on("mouseover", light)
-//                .on("mouseout", unlight);
-//
-//            function light(){
-//                console.log("pointHover");
-//                d3.select(this).classed('pointC-active', true);
-//            }
-//
-//            function unlight(){
-//                d3.select(this).classed('pointC-active', false);
-//            }
-//        }
-//
-//        //grab and drag rectangle
-//        function dragRect() {
-//            var move = d3.event;
-////            console.log("drag rectangle executed");
-//            for(var i = 0; i < rectData.length; i++){
-//                var drawnRectangle = d3.select(shape.rectEl._groups[0][0])
-//                    .attr('x', rectData[i].x += move.dx )
-//                    .attr('y', rectData[i].y += move.dy );
-//            }
-//            drawnRectangle.style('cursor', 'move');
-//            renderRectangle()
-//        }
-//
-//        function renderRectangle(){
-//
-//            //rectangle attributes
-//            var xCoord = rectData[1].x - rectData[0].x > 0 ? rectData[0].x :  rectData[1].x;
-//            var yCoord = rectData[1].y - rectData[0].y > 0 ? rectData[0].y :  rectData[1].y;
-//            var width = Math.abs(rectData[1].x - rectData[0].x);
-//            var height = Math.abs(rectData[1].y - rectData[0].y);
-//
-//            //render rectangle
-//            shape.rectEl.attr("x",xCoord)
-//                        .attr("y", yCoord)
-//                        .attr("width",width)
-//                        .attr("height",height);
-//
-//            //drag point 1 left-top
-//            var point1 = d3.select(shape.pointEl1._groups[0][0]);
-//            point1.attr('r', 4)
-//                .attr('cx', rectData[0].x)
-//                .attr('cy', rectData[0].y);
-//
-//            //drag point 2 right-bottom
-//            var point2 = d3.select(shape.pointEl2._groups[0][0]);
-//            point2.attr('r', 4)
-//                .attr('cx', rectData[1].x)
-//                .attr('cy', rectData[1].y);
-//
-//            //drag point 2 right-top
-//            var point3 = d3.select(shape.pointEl3._groups[0][0]);
-//            point3.attr('r', 4)
-//                .attr('cx', rectData[1].x)
-//                .attr('cy', rectData[0].y);
-//
-//
-//            //drag point 1 left-bottom
-//            var point4 = d3.select(shape.pointEl4._groups[0][0]);
-//            point4.attr('r', 4)
-//                .attr('cx', rectData[0].x)
-//                .attr('cy', rectData[1].y);
-//
-//        }
-//
-//        //drag point logic
-//        var dragP1 = d3.drag().on('drag', dragPoint1);
-//        var dragP2 = d3.drag().on('drag', dragPoint2);
-//        var dragP3 = d3.drag().on('drag', dragPoint3);
-//        var dragP4 = d3.drag().on('drag', dragPoint4);
-//
-//
-//        function dragPoint1() {
-//            var move = d3.event;
-//            d3.select(shape.pointEl2._groups[0][0])
-//                .attr('cx', rectData[0].x += move.dx )
-//                .attr('cy', rectData[0].y += move.dy );
-//            renderRectangle()
-//        }
-//
-//        function dragPoint2() {
-//            var move = d3.event;
-//            d3.select(shape.pointEl2._groups[0][0])
-//                .attr('cx', rectData[1].x += move.dx )
-//                .attr('cy', rectData[1].y += move.dy );
-//            renderRectangle()
-//        }
-//
-//        function dragPoint3() {
-//            var move = d3.event;
-//            d3.select(shape.pointEl3._groups[0][0])
-//                .attr('cx', rectData[1].x += move.dx )
-//                .attr('cy', rectData[0].y += move.dy );
-//            renderRectangle()
-//        }
-//
-//        function dragPoint4() {
-//            var e = d3.event;
-//            d3.select(shape.pointEl4._groups[0][0])
-//                .attr('cx', rectData[0].x += e.dx )
-//                .attr('cy', rectData[1].y += e.dy );
-//            renderRectangle()
-//        }
-//
-//}
-
-
 
     function Rectangle2(){
 
@@ -306,6 +139,172 @@
         }
 
     }
+
+    //    function Rectangle() {
+    //
+    //        var rectData = []; //holds the diagonal point 1 and 2 coordinates of the rectangle
+    //        var shape = {}; //will hold the rectangle's d3 selection
+    //        var p1, p2;
+    //        var start; //starting point
+    //        var edge; //ending point
+    //
+    //        var rectangleDrag =  svg.call(d3.drag().on("start", initialPlod)
+    //                                                .on('drag', secondaryPlod)
+    //                                                .on('end', onStopDraw));
+    //
+    //       //start rendering on drag start
+    //        function initialPlod(){
+    //            start = d3.mouse(this);
+    //                rectData = [{x:start[0], y:start[1]}, {x:start[0], y:start[1]}];
+    //                shape.rectEl = svg.append('rect').attr('class', 'rectangle');
+    //                shape.pointEl1 = svg.append('circle').attr('class', 'pointC').call(dragP1);
+    //                shape.pointEl2 = svg.append('circle').attr('class', 'pointC').call(dragP2);
+    //                shape.pointEl3 = svg.append('circle').attr('class', 'pointC').call(dragP3);
+    //                shape.pointEl4 = svg.append('circle').attr('class', 'pointC').call(dragP4);
+    //                renderRectangle();
+    //        }
+    //
+    //        //when continuing to drag from point 2
+    //        function secondaryPlod(){
+    //                edge = d3.mouse(this);
+    //                rectData[1] = {x: edge[0], y: edge[1]};
+    //                renderRectangle();
+    //        }
+    //
+    //        //on stop drawing bind a drag event
+    //        function onStopDraw(){
+    //
+    //            var rectSelect = d3.select(shape.rectEl._groups[0][0]);
+    //
+    //            rectSelect.call(d3.drag().on("drag", dragRect));
+    //
+    //            rectangleDrag.call(d3.drag().on("start", null)
+    //                .on('drag', null)
+    //                .on('end', null));
+    //
+    //            //highlight rectangle selection
+    //            rectSelect.on("mouseover", highlight)
+    //                .on("mouseout", unhighlight);
+    //
+    //            function highlight(){
+    //                d3.select(this).classed('rect-active', true);
+    //            }
+    //
+    //            function unhighlight(){
+    //                d3.select(this).classed('rect-active', false);
+    //            }
+    //
+    //            var pointSelect = d3.selectAll('.pointC');
+    //            console.log(pointSelect);
+    //
+    //            //highlight selector point selection
+    //            pointSelect.on("mouseover", light)
+    //                .on("mouseout", unlight);
+    //
+    //            function light(){
+    //                console.log("pointHover");
+    //                d3.select(this).classed('pointC-active', true);
+    //            }
+    //
+    //            function unlight(){
+    //                d3.select(this).classed('pointC-active', false);
+    //            }
+    //        }
+    //
+    //        //grab and drag rectangle
+    //        function dragRect() {
+    //            var move = d3.event;
+    ////            console.log("drag rectangle executed");
+    //            for(var i = 0; i < rectData.length; i++){
+    //                var drawnRectangle = d3.select(shape.rectEl._groups[0][0])
+    //                    .attr('x', rectData[i].x += move.dx )
+    //                    .attr('y', rectData[i].y += move.dy );
+    //            }
+    //            drawnRectangle.style('cursor', 'move');
+    //            renderRectangle()
+    //        }
+    //
+    //        function renderRectangle(){
+    //
+    //            //rectangle attributes
+    //            var xCoord = rectData[1].x - rectData[0].x > 0 ? rectData[0].x :  rectData[1].x;
+    //            var yCoord = rectData[1].y - rectData[0].y > 0 ? rectData[0].y :  rectData[1].y;
+    //            var width = Math.abs(rectData[1].x - rectData[0].x);
+    //            var height = Math.abs(rectData[1].y - rectData[0].y);
+    //
+    //            //render rectangle
+    //            shape.rectEl.attr("x",xCoord)
+    //                        .attr("y", yCoord)
+    //                        .attr("width",width)
+    //                        .attr("height",height);
+    //
+    //            //drag point 1 left-top
+    //            var point1 = d3.select(shape.pointEl1._groups[0][0]);
+    //            point1.attr('r', 4)
+    //                .attr('cx', rectData[0].x)
+    //                .attr('cy', rectData[0].y);
+    //
+    //            //drag point 2 right-bottom
+    //            var point2 = d3.select(shape.pointEl2._groups[0][0]);
+    //            point2.attr('r', 4)
+    //                .attr('cx', rectData[1].x)
+    //                .attr('cy', rectData[1].y);
+    //
+    //            //drag point 2 right-top
+    //            var point3 = d3.select(shape.pointEl3._groups[0][0]);
+    //            point3.attr('r', 4)
+    //                .attr('cx', rectData[1].x)
+    //                .attr('cy', rectData[0].y);
+    //
+    //
+    //            //drag point 1 left-bottom
+    //            var point4 = d3.select(shape.pointEl4._groups[0][0]);
+    //            point4.attr('r', 4)
+    //                .attr('cx', rectData[0].x)
+    //                .attr('cy', rectData[1].y);
+    //
+    //        }
+    //
+    //        //drag point logic
+    //        var dragP1 = d3.drag().on('drag', dragPoint1);
+    //        var dragP2 = d3.drag().on('drag', dragPoint2);
+    //        var dragP3 = d3.drag().on('drag', dragPoint3);
+    //        var dragP4 = d3.drag().on('drag', dragPoint4);
+    //
+    //
+    //        function dragPoint1() {
+    //            var move = d3.event;
+    //            d3.select(shape.pointEl2._groups[0][0])
+    //                .attr('cx', rectData[0].x += move.dx )
+    //                .attr('cy', rectData[0].y += move.dy );
+    //            renderRectangle()
+    //        }
+    //
+    //        function dragPoint2() {
+    //            var move = d3.event;
+    //            d3.select(shape.pointEl2._groups[0][0])
+    //                .attr('cx', rectData[1].x += move.dx )
+    //                .attr('cy', rectData[1].y += move.dy );
+    //            renderRectangle()
+    //        }
+    //
+    //        function dragPoint3() {
+    //            var move = d3.event;
+    //            d3.select(shape.pointEl3._groups[0][0])
+    //                .attr('cx', rectData[1].x += move.dx )
+    //                .attr('cy', rectData[0].y += move.dy );
+    //            renderRectangle()
+    //        }
+    //
+    //        function dragPoint4() {
+    //            var e = d3.event;
+    //            d3.select(shape.pointEl4._groups[0][0])
+    //                .attr('cx', rectData[0].x += e.dx )
+    //                .attr('cy', rectData[1].y += e.dy );
+    //            renderRectangle()
+    //        }
+    //
+    //}
 
 </script>
 
