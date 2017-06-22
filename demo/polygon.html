@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <meta charset="UTF-8">
     <title>Polygon Draw</title>
 
     <link href="../css/shapesJS.css" rel="stylesheet" type="text/css"/>
     <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.0/d3.min.js"></script>-->
     <script src="../libs/d3/d3.min.js"></script>
+
 </head>
+
 <body>
+
 <button id='poly'>Poly</button>
-<!--<script src="../js/drawRect.js"></script>-->
 
 <script>
     d3.select('#poly').on('click', function(){ new Polygon(); });
@@ -23,23 +26,21 @@
         var polyPoints = [];
         var gContainer = svgCanvas.append('g').classed("outline", true);
         var isDrawing = false;
+        var isDragging = false;
         var linePoint1, linePoint2;
         var startPoint;
-
-
-//        var polyDrag =  svgCanvas.call(d3.drag().on("start", initialPlod)
-//                                                  .on('drag', secondaryPlod));
 
         var polyDraw = svgCanvas.on("mousedown", setPoints)
                                 .on("mousemove", drawline)
                                 .on("mouseup", decidePoly);
 
-        //initial plod of the polygon point
+        var dragBehavior = d3.drag().on("drag", alterPolygon);
+
+        //On mousedown - setting points for the polygon
         function setPoints(){
 
-//            if(isDragging){
-//                return;
-//            }
+            if(isDragging) return;
+
 
             isDrawing = true;
 
@@ -65,14 +66,16 @@
 //                circlePoint.attr("start-point", "false");
 //            }
 
+            // on setting points if mousedown on a handle
             if(d3.event.target.hasAttribute("handle")){
                 completePolygon()
             }
 
-
         }
-        
+
+        //on mousemove - appending SVG line elements to the points
         function drawline() {
+
             if(isDrawing){
                 linePoint2 = d3.mouse(this);
                 gContainer.select('line').remove();
@@ -81,13 +84,14 @@
                     .attr("y1", linePoint1.y)
                     .attr("x2", linePoint2[0] - 2) //arbitary value must be substracted due to circle cursor hover not working
                     .attr("y2", linePoint2[1] - 2); // arbitary values must be tested
+
             }
         }
 
+        //On mouseup - Removing the placeholder SVG lines and adding polyline
         function decidePoly(){
 
             gContainer.select('line').remove();
-
             gContainer.select('polyline').remove();
 
             var polyline = gContainer.append('polyline').attr('points', polyPoints);
@@ -106,33 +110,67 @@
 
         }
 
+        //Called on mousedown if mousedown point if a polygon handle
         function completePolygon(){
             d3.select('g.outline').remove();
 
             var gPoly = svgCanvas.append('g')
                 .classed("polygon", true);
 
+            polyPoints.splice(polyPoints.length-1);
+            console.log(polyPoints);
+
                 gPoly.append("polygon")
                 .attr("points", polyPoints);
+
+
 
             for(var i = 0; i < polyPoints.length; i++ ){
                 gPoly.append('circle')
                     .attr("cx", polyPoints[i][0])
                     .attr("cy", polyPoints[i][1])
                     .attr("r",  4)
-                    .call(alterPolygon);
+                    .call(dragBehavior);
             }
 
             isDrawing = false;
+            isDragging = true;
         }
 
+        //Altering polygon coordinates based on handle drag
         function alterPolygon(){
+
             if(isDrawing === true)return;
 
-            var circles = d3.select(this);
+            var alteredPoints = [];
+            var selectedP = d3.select(this);
+
+            //go to selected
+            var circles = d3.select(this.parentNode).selectAll('circle');
+            var polygon = d3.select(this.parentNode).select('polygon');
+
+
+            var pointCX = d3.event.x;
+            var pointCY = d3.event.y;
+
+
+            selectedP.attr("cx", pointCX).attr("cy", pointCY);
+
+            //loop through the group of circles attatched to the polygon
+            for(var i=0; i < polyPoints.length; i++){
+
+                var circleCoord = d3.select(circles._groups[0][i]);
+                var pointCoord = [ circleCoord.attr("cx"), circleCoord.attr("cy") ];
+                alteredPoints[i] = pointCoord;
+
+            }
+
+            polygon.attr("points", alteredPoints);
+
         }
     }
 
 </script>
+
 </body>
 </html>
