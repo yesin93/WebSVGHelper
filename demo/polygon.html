@@ -29,12 +29,16 @@
         var isDragging = false;
         var linePoint1, linePoint2;
         var startPoint;
+        var bbox;
+        var boundingRect;
+        var shape;
 
         var polyDraw = svgCanvas.on("mousedown", setPoints)
                                 .on("mousemove", drawline)
                                 .on("mouseup", decidePoly);
 
         var dragBehavior = d3.drag().on("drag", alterPolygon);
+//        var dragPolygon = d3.drag().on("drag", movePolygon(bbox));
 
         //On mousedown - setting points for the polygon
         function setPoints(){
@@ -114,15 +118,14 @@
         function completePolygon(){
             d3.select('g.outline').remove();
 
-            var gPoly = svgCanvas.append('g')
+            gPoly = svgCanvas.append('g')
                 .classed("polygon", true);
 
             polyPoints.splice(polyPoints.length-1);
-            console.log(polyPoints);
+            //console.log(polyPoints);
 
-                gPoly.append("polygon")
+            polyEl = gPoly.append("polygon")
                 .attr("points", polyPoints);
-
 
 
             for(var i = 0; i < polyPoints.length; i++ ){
@@ -135,6 +138,36 @@
 
             isDrawing = false;
             isDragging = true;
+
+            bbox = polyEl._groups[0][0].getBBox();
+            var bbox2 = gPoly._groups[0][0].getBBox();
+            //console.log(bbox);
+
+            //debugger;
+
+//            shape.rectEl = gPoly.append('rect').attr('class', 'rectangle-bind');
+//            shape.pointEl1 = gPoly.append('circle').attr('class', 'pointC');
+//            shape.pointEl2 = gPoly.append('circle').attr('class', 'pointC');
+//            shape.pointEl3 = gPoly.append('circle').attr('class', 'pointC');
+//            shape.pointEl4 = gPoly.append('circle').attr('class', 'pointC');
+
+//            var transformCoords = prepareTransform(bbox);
+//            console.log(transformCoords);
+
+            bbox.x = 0;
+            bbox.y = 0;
+            bbox2.x = 0;
+            bbox2.y = 0;
+
+
+            debugger;
+
+            //console.log(bbox);
+          gPoly.attr("transform", "translate(" + 0 + "," + 0 + ")");
+            polyEL.attr("transform", "translate(" + 0 + "," + 0 + ")");
+//
+//            gPoly.call(d3.drag().on("drag", movePolygon(bbox)));
+
         }
 
         //Altering polygon coordinates based on handle drag
@@ -144,8 +177,9 @@
 
             var alteredPoints = [];
             var selectedP = d3.select(this);
+            var parentNode = d3.select(this.parentNode);
 
-            //go to selected
+            //select only the elements belonging to the parent <g> of the selected circle
             var circles = d3.select(this.parentNode).selectAll('circle');
             var polygon = d3.select(this.parentNode).select('polygon');
 
@@ -153,10 +187,10 @@
             var pointCX = d3.event.x;
             var pointCY = d3.event.y;
 
-
+            //rendering selected circle on drag
             selectedP.attr("cx", pointCX).attr("cy", pointCY);
 
-            //loop through the group of circles attatched to the polygon
+            //loop through the group of circle handles attatched to the polygon and push to new array
             for(var i=0; i < polyPoints.length; i++){
 
                 var circleCoord = d3.select(circles._groups[0][i]);
@@ -165,8 +199,42 @@
 
             }
 
+            //re-rendering polygon attributes to fit the handles
             polygon.attr("points", alteredPoints);
 
+            bbox = parentNode._groups[0][0].getBBox();
+            console.log(bbox);
+        }
+
+        function movePolygon(){
+
+        }
+
+        function prepareTransform(bboxVal){
+
+            var originalPosition = {
+                x: bboxVal.x,
+                y: bboxVal.y
+            };
+
+            console.log(bboxVal);
+            console.log(bbox);
+
+            bbox.x = 0;
+            bbox.y = 0;
+
+
+
+//            //render a bounding box
+//            shape.rectEl.attr("x", bbox.x).attr("y", bbox.y).attr("height", bbox.height).attr("width", bbox.width);
+//
+//            //drag points
+//            shape.pointEl1.attr("cx", bbox.x).attr("cy", bbox.y).attr("r", 4);
+//            shape.pointEl2.attr("cx", (bbox.x + bbox.width)).attr("cy", (bbox.y + bbox.height)).attr("r", 4);
+//            shape.pointEl3.attr("cx", bbox.x + bbox.width).attr("cy", bbox.y).attr("r", 4);
+//            shape.pointEl4.attr("cx", bbox.x).attr("cy", bbox.y + bbox.height).attr("r", 4);
+
+            return originalPosition;
         }
     }
 

@@ -27,6 +27,7 @@ svg {
     fill: lightblue;
     stroke: blue;
     stroke-width: 2px;
+    fill-opacity: 0.5;
 }
 
 .rectangle-bind{
@@ -40,6 +41,7 @@ circle {
     fill: lightgreen;
     stroke: green;
     stroke-width: 2px;
+    fill-opacity: 0.5;
 }
 
 .rect-active {
@@ -62,6 +64,7 @@ path{
 
 polygon{
     fill: #b6eeff;
+    fill-opacity: 0.5;
     stroke: #0067ff;
     stroke-width: 2px;
 }

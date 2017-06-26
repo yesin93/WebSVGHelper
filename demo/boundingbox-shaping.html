@@ -94,7 +94,7 @@ function Rectangle(){
 
         rectContainer.attr("transform", "translate(" + gData.x + "," + gData.y + ")");
 
-        shape.rectEl.call(d3.drag().on("drag", dragRect));
+        rectContainer.call(d3.drag().on("drag", dragRect));
     }
 
     //grab and drag rectangle

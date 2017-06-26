@@ -10,16 +10,19 @@
 </head>
 <body>
 <button id='rectangle'>Rectangle</button>
+<button id='rectangle2'>Rectangle 2</button>
 <!--<script src="../js/drawRect.js"></script>-->
 
 <script>
-    d3.select('#rectangle').on('click', function(){ new Rectangle2(); });
+    d3.select('#rectangle').on('click', function(){ new Rectangle(); });
+
+    d3.select('#rectangle2').on('click', function(){ new Rectangle2(); });
 
     var w = 600, h = 500;
     var svgCanvas = d3.select('body').append('svg').attr("width", w).attr("height", h);
 
 
-    function Rectangle2(){
+    function Rectangle(){
 
         var rectData = []; //holds the diagonal point 1 and 2 coordinates of the rectangle
         var rectContainer; // g element
@@ -135,6 +138,112 @@
 //        point4.attr('r', 4)
 //            .attr('cx', rectData[0].x)
 //            .attr('cy', rectData[1].y);
+
+        }
+
+    }
+
+    function Rectangle2(){
+
+        var rectData = []; //holds the diagonal point 1 and 2 coordinates of the rectangle
+        var rectContainer; // g element
+        var shape = {}; //will hold the rectangle's d3 selections
+        var start; //starting point
+        var edge; //ending point
+        var gData = {}; //holds translate values for g element
+
+        var rectangleDrag =  svgCanvas.call(d3.drag().on("start", initialPlod)
+            .on('drag', secondaryPlod)
+            .on('end', onStopDraw));
+
+        //start rendering on drag start
+        function initialPlod(){
+            start = d3.mouse(this);
+//      console.log(start);
+            rectData = [{x:start[0], y:start[1]}, {x:start[0], y:start[1]}];
+            rectContainer = svgCanvas.append("g");
+            shape.rectEl = rectContainer.append('rect').attr('class', 'rectangle');
+            shape.pointEl1 = rectContainer.append('circle').attr('class', 'pointC');
+            shape.pointEl2 = rectContainer.append('circle').attr('class', 'pointC');
+            shape.pointEl3 = rectContainer.append('circle').attr('class', 'pointC');
+            shape.pointEl4 = rectContainer.append('circle').attr('class', 'pointC');
+            renderRectangle();
+        }
+
+        //when continuing to drag from point 2
+        function secondaryPlod(){
+            edge = d3.mouse(this);
+            rectData[1] = {x: edge[0], y: edge[1]};
+            renderRectangle();
+        }
+
+        //on stop drawing bind a drag event
+        function onStopDraw(){
+
+            svgCanvas.call(d3.drag().on("start", null)
+                .on('drag', null)
+                .on('end', null));
+
+            var bbox = shape.rectEl.node().getBBox();
+            console.log(bbox);
+
+            //temporary variables that hold original position
+            var rectCords = {
+                x: bbox.x,
+                y: bbox.y
+            };
+
+            //setting boundingbox to 0,0 coordinates
+            bbox.x = 0;
+            bbox.y = 0;
+
+//      console.log(bbox);
+
+            shape.rectEl.attr("x", bbox.x).attr("y", bbox.y);
+
+            shape.pointEl1.attr("cx", bbox.x).attr("cy", bbox.y).attr("r", 4);
+            shape.pointEl2.attr("cx", (bbox.x + bbox.width)).attr("cy", (bbox.y + bbox.height)).attr("r", 4);
+            shape.pointEl3.attr("cx", bbox.x + bbox.width).attr("cy", bbox.y).attr("r", 4);
+            shape.pointEl4.attr("cx", bbox.x).attr("cy", bbox.y + bbox.height).attr("r", 4);
+
+            gData.x = rectCords.x;
+            gData.y = rectCords.y;
+
+            rectContainer.attr("transform", "translate(" + gData.x + "," + gData.y + ")");
+
+            rectContainer.call(d3.drag().on("drag", dragRect));
+        }
+
+        //grab and drag rectangle
+        function dragRect() {
+            var move = d3.event;
+//            console.log(move);
+            rectContainer.attr("transform", "translate(" + (gData.x += move.dx)  + "," + (gData.y += move.dy) + ")");
+        }
+
+        /**
+         *
+         * Method takes the x,y coordinates from rectData object array
+         * which contains coordinates of point1 and point2
+         * and calculates the the height and width
+         *
+         */
+        function renderRectangle(){
+            //rectangle attributes
+            var xCoord = rectData[1].x - rectData[0].x > 0 ? rectData[0].x :  rectData[1].x;
+            var yCoord = rectData[1].y - rectData[0].y > 0 ? rectData[0].y :  rectData[1].y;
+            var width = Math.abs(rectData[1].x - rectData[0].x);
+            var height = Math.abs(rectData[1].y - rectData[0].y);
+
+            //render rectangle
+            shape.rectEl.attr("x",xCoord)
+                .attr("y", yCoord)
+                .attr("width",width)
+                .attr("height",height);
+        }
+
+        function renderPoints(){
+//            //drag points
 
         }
 
