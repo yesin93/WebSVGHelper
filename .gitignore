@@ -11,3 +11,4 @@ target
 *.ids
 
 demo/polygon-example.html
+js/jointJSdev.js

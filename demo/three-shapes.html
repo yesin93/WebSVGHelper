@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Shapes Canvas</title>
+
+    <link href="../css/shapesJS.css" rel="stylesheet" type="text/css"/>
+    <script src="../libs/d3/d3.min.js"></script>
+</head>
+
+<body>
+
+<div id="circle-container">
+    <button id='rectangle'>Rectangle</button>
+    <button id='circle'>Circle</button>
+    <button id='polygon'>Polygon</button>
+    <svg id="shape-svg" width="600" height="600"></svg>
+</div>
+<script>
+
+    var svgCanvas = d3.select("#shape-svg");
+
+    d3.select('#rectangle').on('click', function(){ new Rectangle(); } );
+    d3.select('#circle').on('click', function(){ new Circle(); });
+    d3.select('#polygon').on('click', function(){ new Polygon(); });
+
+    function Rectangle(){
+        console.log("Rectangle object created");
+        var rectData = []; //holds the diagonal point 1 and 2 coordinates of the rectangle
+        var rectContainer; // g element
+        var shape = {}; //will hold the rectangle's d3 selections
+        var start; //starting point
+        var edge; //ending point
+        var gData = {}; //holds translate values for g element
+
+        var rectangleDrag =  svgCanvas.call(d3.drag().on("start", initialPlod)
+            .on('drag', secondaryPlod)
+            .on('end', onStopDraw));
+
+        //start rendering on drag start
+        function initialPlod(){
+            start = d3.mouse(this);
+            rectData = [{x:start[0], y:start[1]}, {x:start[0], y:start[1]}];
+            rectContainer = svgCanvas.append("g");
+            shape.rectEl = rectContainer.append('rect').attr('class', 'rectangle');
+            shape.pointEl1 = rectContainer.append('circle').attr('class', 'pointC');
+            shape.pointEl2 = rectContainer.append('circle').attr('class', 'pointC');
+            shape.pointEl3 = rectContainer.append('circle').attr('class', 'pointC');
+            shape.pointEl4 = rectContainer.append('circle').attr('class', 'pointC');
+            renderRectangle();
+        }
+
+        //when continuing to drag from point 2
+        function secondaryPlod(){
+            edge = d3.mouse(this);
+            rectData[1] = {x: edge[0], y: edge[1]};
+            renderRectangle();
+        }
+
+        //on stop drawing bind a drag event
+        function onStopDraw(){
+            debugger;
+
+            svgCanvas.call(d3.drag().on("start", null)
+                .on('drag', null)
+                .on('end', null));
+
+            rectContainer.datum({
+                x:0,
+                y:0
+            });
+
+            rectContainer.call(d3.drag().on("drag", function(d) {
+                d3.select(this).attr("transform", "translate(" +
+                    (d.x = d3.event.x) + "," + (d.y = d3.event.y) + ")")
+            }));
+
+        }
+
+        /**
+         *
+         * Method takes the x,y coordinates from rectData object array
+         * which contains coordinates of point1 and point2
+         * and calculates the the height and width
+         *
+         */
+        function renderRectangle(){
+
+            //rectangle attributes
+            var xCoord = rectData[1].x - rectData[0].x > 0 ? rectData[0].x :  rectData[1].x;
+            var yCoord = rectData[1].y - rectData[0].y > 0 ? rectData[0].y :  rectData[1].y;
+            var width = Math.abs(rectData[1].x - rectData[0].x);
+            var height = Math.abs(rectData[1].y - rectData[0].y);
+
+            //render rectangle
+            shape.rectEl.attr("x",xCoord)
+                .attr("y", yCoord)
+                .attr("width",width)
+                .attr("height",height);
+
+        //drag point 1 left-top
+            shape.pointEl1.attr('r', 4)
+            .attr('cx', rectData[0].x)
+            .attr('cy', rectData[0].y);
+
+
+        //drag point 2 right-bottom
+            shape.pointEl2.attr('r', 4)
+            .attr('cx', rectData[1].x)
+            .attr('cy', rectData[1].y);
+
+
+        //drag point 3 right-top
+            shape.pointEl3.attr('r', 4)
+            .attr('cx', rectData[1].x)
+            .attr('cy', rectData[0].y);
+
+
+
+        //drag point 4 left-bottom
+            shape.pointEl4.attr('r', 4)
+            .attr('cx', rectData[0].x)
+            .attr('cy', rectData[1].y);
+
+        }
+    }
+
+    /**
+     *
+     * //////////////  Circle Draw  \\\\\\\\\\\\\
+     *
+     */
+
+    function Circle() {
+        console.log("Circle object created");
+
+        var circle;
+        var gData = {};
+        var shape = {};
+        var gContainer;
+        var point1, point2;
+
+        svgCanvas.call(d3.drag().on("start", initialPlod)
+            .on("drag", dragDraw)
+            .on("end", stopRendering));
+
+        //On Drag Start - initial marking of the circle on the canvas without drag points
+        function initialPlod() {
+            point1 = d3.mouse(this);
+            gContainer = svgCanvas.append("g");
+            circle = gContainer.append("circle")
+                .attr("cx", point1[0])
+                .attr("cy", point1[1])
+                .attr("r", 0);
+
+            shape.rectEl = gContainer.append('rect').attr('class', 'rectangle-bind');
+            shape.pointEl1 = gContainer.append('circle').attr('class', 'pointC');
+            shape.pointEl2 = gContainer.append('circle').attr('class', 'pointC');
+            shape.pointEl3 = gContainer.append('circle').attr('class', 'pointC');
+            shape.pointEl4 = gContainer.append('circle').attr('class', 'pointC');
+
+            //midpoints
+//          shape.midpoint1 = gContainer.append('circle').attr('class', 'pointC');
+//          shape.midpoint2 = gContainer.append('circle').attr('class', 'pointC');
+//          shape.midpoint3 = gContainer.append('circle').attr('class', 'pointC');
+//          shape.midpoint4 = gContainer.append('circle').attr('class', 'pointC');
+
+        }
+
+        function getRadius(cX, cY, perimeterX, perimeterY) {
+            /**
+             * using circle equation
+             *
+             * r2 = (x2 - x1)^2 + (y2 - y1)^2
+             */
+            return Math.sqrt(Math.pow((perimeterX - cX), 2) + Math.pow((perimeterY - cY), 2));
+        }
+
+        //On Drag
+        function dragDraw() {
+            point2 = d3.mouse(this);
+            circle = circle.attr("r", getRadius(point1[0], point1[1], point2[0], point2[1]));
+        }
+
+        //On drag Stop
+        function stopRendering() {
+//            debugger;
+
+            svgCanvas.call(d3.drag().on("start", null)
+                .on("drag", null)
+                .on("end", null));
+
+            var bbox = circle.node().getBBox();
+
+            //temporary variables that hold original position
+            var circleCords = {
+                x: bbox.x,
+                y: bbox.y
+            };
+
+            //render a bounding box for the circle at 0,0
+            shape.rectEl.attr("x", bbox.x).attr("y", bbox.y).attr("height", bbox.height).attr("width", bbox.width);
+
+            //setting drag points to the bounding box rectangle
+            shape.pointEl1.attr("cx", bbox.x).attr("cy", bbox.y).attr("r", 4);
+            shape.pointEl2.attr("cx", (bbox.x + bbox.width)).attr("cy", (bbox.y + bbox.height)).attr("r", 4);
+            shape.pointEl3.attr("cx", bbox.x + bbox.width).attr("cy", bbox.y).attr("r", 4);
+            shape.pointEl4.attr("cx", bbox.x).attr("cy", bbox.y + bbox.height).attr("r", 4);
+
+            //mid points
+//          shape.midpoint1.attr("cx", (bbox.x + bbox.width)/2).attr("cy", bbox.y).attr("r", 4);
+//          shape.midpoint2.attr("cx", (bbox.x + bbox.width)).attr("cy", (bbox.y + bbox.height)/2).attr("r", 4);
+//          shape.midpoint3.attr("cx", (bbox.x + bbox.width)/2).attr("cy", (bbox.y + bbox.height)).attr("r", 4);
+//          shape.midpoint4.attr("cx", (bbox.x)).attr("cy", (bbox.y + bbox.height)/2).attr("r", 4);
+
+            gContainer.datum({
+                x: 0,
+                y: 0
+            });
+
+            gContainer.call(d3.drag().on("drag", function (d) {
+                d3.select(this).attr("transform", "translate(" +
+                    (d.x = d3.event.x) + "," + (d.y = d3.event.y) + ")")
+            }));
+        }
+    }
+
+    /**
+     *
+     * //////////////  Polygon Draw  \\\\\\\\\\\\\
+     * \\\\\\\\\\\\\\                /////////////
+     *
+     */
+
+        function Polygon() {
+
+            console.log("Polygon instance created");
+
+//            debugger;
+
+            var polyPoints = [];
+            var gContainer = svgCanvas.append('g').classed("outline", true);
+            var isDrawing = false;
+            var isDragging = false;
+            var linePoint1, linePoint2;
+            var startPoint;
+            var bbox;
+            var boundingRect;
+            var shape;
+            var gPoly;
+
+            svgCanvas.on("mousedown", setPoints)
+                .on("mousemove", drawline)
+                .on("mouseup", decidePoly);
+
+            var dragBehavior = d3.drag().on("drag", alterPolygon);
+
+            //On mousedown - setting points for the polygon
+            function setPoints() {
+                console.log("A point is set aaaaaaaa");
+                if (isDragging) return;
+
+                isDrawing = true;
+                console.log("A point is set");
+
+                var plod = d3.mouse(this);
+                linePoint1 = {x: plod[0], y: plod[1]};
+
+                polyPoints.push(plod);
+
+                var circlePoint = gContainer.append("circle")
+                    .attr("cx", linePoint1.x)
+                    .attr("cy", linePoint1.y)
+                    .attr("r", 4)
+                    .attr("start-point", true)
+                    .classed("handle", true)
+                    .style("cursor", "pointer");
+
+//                debugger;
+
+                //checking undefined using keyword bad practice?
+//            if(startPoint === undefined){
+//                startPoint = polyPoints[0];
+//                console.log(startPoint);
+//                circlePoint.attr("start-point", "true");
+//            }else{
+//                circlePoint.attr("start-point", "false");
+//            }
+
+                // on setting points if mousedown on a handle
+                if (d3.event.target.hasAttribute("handle")) {
+                    completePolygon();
+//                    new Polygon();
+                    svgCanvas.on("mousedown", null)
+                        .on("mousemove", null)
+                        .on("mouseup", null);
+                }
+
+            }
+
+            //on mousemove - appending SVG line to connect the points
+            function drawline() {
+                console.log("mousemove");
+                if (isDrawing) {
+                    console.log("drawing line");
+                    linePoint2 = d3.mouse(this);
+                    gContainer.select('line').remove();
+                    gContainer.append('line')
+                        .attr("x1", linePoint1.x)
+                        .attr("y1", linePoint1.y)
+                        .attr("x2", linePoint2[0] - 2) //arbitrary value must be substracted due to circle cursor hover not working
+                        .attr("y2", linePoint2[1] - 2); // arbitrary values must be tested
+
+                }
+            }
+
+            //On mouseup - Removing the placeholder SVG lines and adding polyline
+            function decidePoly() {
+                console.log("Adding polyline");
+
+                gContainer.select('line').remove();
+                gContainer.select('polyline').remove();
+
+                var polyline = gContainer.append('polyline').attr('points', polyPoints);
+
+                gContainer.selectAll('circle').remove();
+
+                for (var i = 0; i < polyPoints.length; i++) {
+                    var circlePoint = gContainer.append('circle')
+                        .attr('cx', polyPoints[i][0])
+                        .attr('cy', polyPoints[i][1])
+                        .attr('r', 4)
+                        .attr("handle", true)
+                        .classed("handle", true);
+
+                }
+
+            }
+
+            //Called on mousedown if mousedown point if a polygon handle
+            function completePolygon() {
+
+                console.log("Polygon Complete");
+                d3.select('g.outline').remove();
+
+                gPoly = svgCanvas.append('g')
+                    .classed("polygon", true);
+
+                polyPoints.splice(polyPoints.length - 1);
+
+                gPoly.append("polygon")
+                    .attr("points", polyPoints);
+
+                for (var i = 0; i < polyPoints.length; i++) {
+                    gPoly.append('circle')
+                        .attr("cx", polyPoints[i][0])
+                        .attr("cy", polyPoints[i][1])
+                        .attr("r", 4)
+                        .call(dragBehavior);
+                }
+
+                isDrawing = false;
+                isDragging = true;
+
+//                bbox = polyEl._groups[0][0].getBBox();
+
+                //debugger;
+
+//            shape.rectEl = gPoly.append('rect').attr('class', 'rectangle-bind');
+//            shape.pointEl1 = gPoly.append('circle').attr('class', 'pointC');
+//            shape.pointEl2 = gPoly.append('circle').attr('class', 'pointC');
+//            shape.pointEl3 = gPoly.append('circle').attr('class', 'pointC');
+//            shape.pointEl4 = gPoly.append('circle').attr('class', 'pointC');
+
+                gPoly.datum({
+                    x: 0,
+                    y: 0
+                });
+
+
+                //console.log(bbox);
+//            gPoly.attr("transform", "translate(" + 0 + "," + 0 + ")");
+
+                gPoly.call(d3.drag().on("drag", function (d) {
+                    d3.select(this).attr("transform", "translate(" +
+                        (d.x = d3.event.x) + "," + (d.y = d3.event.y) + ")")
+                }));
+
+                console.log("completed");
+                console.log("completed");
+
+            }
+
+            //Altering polygon coordinates based on handle drag
+            function alterPolygon() {
+
+                if (isDrawing === true)return;
+
+                var alteredPoints = [];
+                var selectedP = d3.select(this);
+                var parentNode = d3.select(this.parentNode);
+
+                //select only the elements belonging to the parent <g> of the selected circle
+                var circles = d3.select(this.parentNode).selectAll('circle');
+                var polygon = d3.select(this.parentNode).select('polygon');
+
+                var pointCX = d3.event.x;
+                var pointCY = d3.event.y;
+
+                //rendering selected circle on drag
+                selectedP.attr("cx", pointCX).attr("cy", pointCY);
+
+                //loop through the group of circle handles attatched to the polygon and push to new array
+                for (var i = 0; i < polyPoints.length; i++) {
+
+                    var circleCoord = d3.select(circles._groups[0][i]);
+                    var pointCoord = [circleCoord.attr("cx"), circleCoord.attr("cy")];
+                    alteredPoints[i] = pointCoord;
+
+                }
+
+                //re-rendering polygon attributes to fit the handles
+                polygon.attr("points", alteredPoints);
+            }
+        }
+
+
+
+</script>
+</body>
+</html>
