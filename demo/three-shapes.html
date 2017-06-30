@@ -60,7 +60,7 @@
 
         //on stop drawing bind a drag event
         function onStopDraw(){
-            debugger;
+//            debugger;
 
             svgCanvas.call(d3.drag().on("start", null)
                 .on('drag', null)
@@ -99,26 +99,25 @@
                 .attr("width",width)
                 .attr("height",height);
 
-        //drag point 1 left-top
+            //drag point 1 left-top
             shape.pointEl1.attr('r', 4)
             .attr('cx', rectData[0].x)
             .attr('cy', rectData[0].y);
 
 
-        //drag point 2 right-bottom
+            //drag point 2 right-bottom
             shape.pointEl2.attr('r', 4)
             .attr('cx', rectData[1].x)
             .attr('cy', rectData[1].y);
 
 
-        //drag point 3 right-top
+            //drag point 3 right-top
             shape.pointEl3.attr('r', 4)
             .attr('cx', rectData[1].x)
             .attr('cy', rectData[0].y);
 
 
-
-        //drag point 4 left-bottom
+            //drag point 4 left-bottom
             shape.pointEl4.attr('r', 4)
             .attr('cx', rectData[0].x)
             .attr('cy', rectData[1].y);
@@ -258,7 +257,7 @@
 
             //On mousedown - setting points for the polygon
             function setPoints() {
-                console.log("A point is set aaaaaaaa");
+                console.log("Mousedown");
                 if (isDragging) return;
 
                 isDrawing = true;
@@ -301,9 +300,9 @@
 
             //on mousemove - appending SVG line to connect the points
             function drawline() {
-                console.log("mousemove");
+                //console.log("mousemove");
                 if (isDrawing) {
-                    console.log("drawing line");
+                    //console.log("drawing line");
                     linePoint2 = d3.mouse(this);
                     gContainer.select('line').remove();
                     gContainer.append('line')
@@ -317,7 +316,7 @@
 
             //On mouseup - Removing the placeholder SVG lines and adding polyline
             function decidePoly() {
-                console.log("Adding polyline");
+//                console.log("Adding polyline");
 
                 gContainer.select('line').remove();
                 gContainer.select('polyline').remove();
